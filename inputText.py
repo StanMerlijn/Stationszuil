@@ -16,7 +16,7 @@ randomNr = int(random.random())
 wantsName = input("Do you want to use your name(yes or no): ")
 
 
-if wantsName == ("yes" or "Yes") or "y":
+if wantsName == ("yes" or "Yes"):
     name = input("What is your name: ")
 else:
     name = "anonymous"
@@ -35,5 +35,5 @@ if len(message) > 140:
     print("your message should be less than 140 characters")
 else:
     file = open("text.txt", "a")
-    file.write(f"{name}, {message}, {now}, {station}\n")
+    file.write(f"{name}, {message}, {get_date()} {get_time()}, {station}\n")
     file.close()
