@@ -21,10 +21,9 @@ while True:
             name = input("What is your name: ")
         else:
             name = "anonymous"
-
+        email = input("what is you email: ")
         with open("stations.txt", "r") as file:
             lines = file.readlines()
-
         # generates a random number under the amount of lines in stations.txt. then retrieves a that random station
         random_line_number = random.randint(0, len(lines) - 1)
         station = lines[random_line_number].strip()
@@ -35,7 +34,7 @@ while True:
             print("your message should be less than 140 characters")
         if len(message) <= 140:
             with open("text.txt", "a") as file:
-                file.write(f"{name}, {message}, {date_now}, {time_now}, {station}\n")
+                file.write(f"{name}, {email}, {message}, {date_now}, {time_now}, {station}\n")
     else:
         break
 
