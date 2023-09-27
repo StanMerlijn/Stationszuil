@@ -24,6 +24,8 @@ while True:
             name = "anonymous"
         with open("stations.txt", "r") as file:
             lines = file.readlines()
+
+        # generates a random number under the amount of lines in stations.txt. then retrieves a that random station
         random_line_number = random.randint(0, len(lines) - 1)
         station = lines[random_line_number].strip()
 
