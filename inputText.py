@@ -11,6 +11,7 @@ def get_time_date():
 
 
 while True:
+
     randomNr = int(random.random())
     wants_write = input("do you want to write a message? ")
     time_now, date_now = get_time_date()
@@ -21,17 +22,17 @@ while True:
             name = input("What is your name: ")
         else:
             name = "anonymous"
-        # here the user inputs their message
-        message = input("write your message here: ")
         with open("stations.txt", "r") as file:
             lines = file.readlines()
         random_line_number = random.randint(0, len(lines) - 1)
         station = lines[random_line_number].strip()
-        # checks if the message is bigger than 140 else it will ask to write the message again
-        if len(message) > 140:
+
+        # here the user inputs there message
+        message = input("write your message here: ")
+        if len(message) >= 140:
             print("your message should be less than 140 characters")
-        else:
-            # writes all the given data in a txt file
+            message = input("write your message here again: ")
+        if len(message) <= 140:
             with open("text.txt", "a") as file:
                 file.write(f"{name}, {message}, {date_now}, {time_now}, {station}\n")
     else:
