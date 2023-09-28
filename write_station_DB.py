@@ -16,3 +16,11 @@ with open("stations.txt", "r") as file:
     conn.commit()
 curser.close()
 conn.close()
+
+
+cursers = conn.cursor()
+cursers.execute("SELECT COUNT(*) FROM station;")
+row_count = cursers.fetchone()[0]
+cursers.close()
+conn.close()
+print(row_count)
