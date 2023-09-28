@@ -28,9 +28,10 @@ def is_station_in_db(station_name):
 
 
 with open("text.txt", "r") as file:
+    email = input("moderator email: ")
     for line in file:
         # extract data from the file
-        name_user, email, message, date_now, time_now, station = line.strip().split(", ")
+        name_user, message, date_now, time_now, station = line.strip().split(", ")
 
         # prompt for validation
         valid_text = input(f"Is this text by {name_user} valid: {message}: ")
