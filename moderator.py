@@ -13,7 +13,7 @@ input_file_messages = "text.txt"
 
 
 def clear_file(input_file):
-    """"this function clears the file when its called"""
+    """"this function clears the file when called"""
     with open(input_file, "w"):
         return
 
@@ -29,17 +29,23 @@ def is_station_in_db(station_name):
 
 with open("text.txt", "r") as file:
     for line in file:
+        # extract data from the file
         name_user, email, message, date_now, time_now, station = line.strip().split(", ")
+
+        # prompt for validation
         valid_text = input(f"Is this text by {name_user} valid: {message}: ")
+
+        cur = connection.cursor()
 
         # if moderator agrees that the text is valid it will be writen into the database
         if valid_text in yes_bool:
-            cur = connection.cursor()
-
             # if the random station is already in the DB it will not write it to it
             if is_station_in_db(station) is False:
+                # insert station into station table
                 sql_query = "INSERT INTO station (station_name) VALUES (%s)"
                 cur.execute(sql_query, (station,))
+
+            # insert user data into the ns_user table
             insert_script = ("INSERT INTO ns_user (name_column, email_column, date_column,"
                              "time_column, message_column, station_name) "
                              "VALUES (%s, %s, %s, %s, %s, %s)")
