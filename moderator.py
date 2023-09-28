@@ -7,7 +7,6 @@ connection = psycopg2.connect(
     user="postgres",
     password="Whynow3421!"
 )
-email = "idkman@hello.com"
 
 yes_bool = "yesYesYy1jaJajJOKok"
 input_file_messages = "text.txt"
@@ -28,14 +27,15 @@ def is_station_in_db(station_name):
     return data > 0
 
 
-with open("text.txt", "r+") as file:
+with open("text.txt", "r") as file:
     for line in file:
-        name_user, message, date_now, time_now, station = line.strip().split(", ")
+        name_user, email, message, date_now, time_now, station = line.strip().split(", ")
         valid_text = input(f"Is this text by {name_user} valid: {message}: ")
 
         # if moderator agrees that the text is valid it will be writen into the database
         if valid_text in yes_bool:
             cur = connection.cursor()
+
             # if the random station is already in the DB it will not write it to it
             if is_station_in_db(station) is False:
                 sql_query = "INSERT INTO station (station_name) VALUES (%s)"
