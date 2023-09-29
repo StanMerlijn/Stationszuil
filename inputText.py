@@ -1,4 +1,5 @@
 import random
+import csv
 from datetime import datetime
 
 yes_bool = "yesYesYy1jaJajJOKok"
@@ -32,8 +33,10 @@ while True:
         if len(message) >= 140:
             print("your message should be less than 140 characters")
         if len(message) <= 140:
-            with open("text.txt", "a") as file:
-                file.write(f"{name}, {message}, {date_now}, {time_now}, {station}\n")
+            data_for_file = [name, message, date_now, time_now, station]
+            with open("text.csv", "a", newline='') as csv_file:
+                writer = csv.writer(csv_file)
+                writer.writerow(data_for_file)
     else:
         break
 
