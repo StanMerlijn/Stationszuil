@@ -33,9 +33,15 @@ while True:
         if len(message) >= 140:
             print("your message should be less than 140 characters")
         if len(message) <= 140:
-            data_for_file = [name, message, date_now, time_now, station]
-            with open("text.csv", "a", newline='') as csv_file:
-                writer = csv.writer(csv_file)
+
+            fieldnames = ['name', 'message', 'date', 'time', 'station']
+
+            data_for_file = {"ame": name, "message": message, "date": date_now, "time": time_now, "station": station}
+            with open("text.csv", "w", newline='') as csv_file:
+                if csv_file.tell() == 0:
+                    writer = csv.writer(csv_file)
+                    writer.writerow(fieldnames)
+
                 writer.writerow(data_for_file)
     else:
         break
