@@ -70,6 +70,5 @@ while True:
                 print("There are no text to moderate")
     cur.close()
     connection.close()
+    clear_file(file_messages)
     break
-
-clear_file(file_messages)
