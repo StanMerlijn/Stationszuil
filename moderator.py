@@ -77,6 +77,8 @@ def write_to_db(filename):
                 if write_data(cursor, email, line):
                     connection.commit()
         clear_file(filename)
+    else:
+        print("There is no data available to moderate")
     cursor.close()
     connection.close()
 
