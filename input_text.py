@@ -6,9 +6,9 @@ yes_bool = "yesYesYy1jaJajJOKok"
 
 # creating a function to get the current time and date.
 def get_time_date():
-    current_date = datetime.now().date()
-    current_time = datetime.now().time().strftime("%X")
-    return current_time, current_date
+    date = datetime.now().date()
+    time = datetime.now().time().strftime("%X")
+    return time, date
 
 
 while True:
