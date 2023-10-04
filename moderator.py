@@ -12,6 +12,7 @@ connection = psycopg2.connect(
 yes_bool = "yesYesYy1jaJajJOKok"
 file_messages = "text.csv"
 
+email = input("before moderating could enter your email: ")
 
 def get_time_date():
     date = datetime.now().date()
@@ -61,8 +62,8 @@ while True:
                                  "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
 
                 # The values that will be written to its respectable columns
-                insert_values = (name_user, email, date_message, time_message, message, station, current_date, current_time)
-
+                insert_values = (name_user, email, date_message, time_message,
+                                 message, station, current_date, current_time)
                 cur.execute(insert_script, insert_values)
                 connection.commit()
             else:
