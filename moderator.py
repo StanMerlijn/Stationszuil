@@ -17,10 +17,10 @@ def is_yes(input_text):
     return input_text in yes_bool
 
 
-def file_is_empty():
+def file_not_empty():
     with open(file_messages) as csv_file:
         lines = csv_file.readlines()
-        return len(lines) == 0
+        return len(lines) != 0
 
 
 def get_time_date():
@@ -42,7 +42,7 @@ def is_station_in_db(cursor, station_name):
     return data > 0
 
 
-if not file_is_empty():
+if file_not_empty():
     email = input("before moderating could enter your email: ")
 
 
@@ -71,7 +71,7 @@ def write_data(cursor, mod_email, line):
 
 def write_to_db(filename):
     cursor = connection.cursor()
-    while not file_is_empty():
+    while file_not_empty():
         with open(filename) as csv_file:
             for line in csv_file:
                 if write_data(cursor, email, line):
