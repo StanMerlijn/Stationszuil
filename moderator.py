@@ -1,4 +1,5 @@
 import psycopg2
+from datetime import datetime
 
 # connecting to the database
 connection = psycopg2.connect(
@@ -10,6 +11,12 @@ connection = psycopg2.connect(
 
 yes_bool = "yesYesYy1jaJajJOKok"
 file_messages = "text.csv"
+
+
+def get_time_date():
+    date = datetime.now().date()
+    time = datetime.now().time().strftime("%X")
+    return time, date
 
 
 def clear_file(input_file):
@@ -28,11 +35,12 @@ def is_station_in_db(station_name):
 
 
 while True:
+    current_time, current_date = get_time_date()
     with open(file_messages, "r") as file:
         cur = connection.cursor()
         for line in file:
             # extract data from the file
-            name_user, message, date_now, time_now, station = line.strip().split(", ")
+            name_user, message, date_message, time_message, station = line.strip().split(", ")
 
             # prompt for validation
             valid_text = input(f"Is this text by {name_user} valid: {message}: ")
@@ -49,9 +57,12 @@ while True:
 
                 # insert user data into the ns_user table
                 insert_script = ("INSERT INTO ns_user (name_column, email_column, date_column,"
-                                 "time_column, message_column, station_name) "
-                                 "VALUES (%s, %s, %s, %s, %s, %s)")
-                insert_values = (name_user, email, date_now, time_now, message, station)
+                                 "time_column, message_column, station_name, mod_date, mod_time) "
+                                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
+
+                # The values that will be written to its respectable columns
+                insert_values = (name_user, email, date_message, time_message, message, station, current_date, current_time)
+
                 cur.execute(insert_script, insert_values)
                 connection.commit()
             else:
