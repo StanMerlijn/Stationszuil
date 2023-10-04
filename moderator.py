@@ -9,7 +9,7 @@ connection = psycopg2.connect(
 )
 
 yes_bool = "yesYesYy1jaJajJOKok"
-input_file_messages = "text.txt"
+file_messages = "text.csv"
 
 
 def clear_file(input_file):
@@ -27,32 +27,37 @@ def is_station_in_db(station_name):
     return data > 0
 
 
-with open("text.txt", "r") as file:
-    email = input("moderator email: ")
-    for line in file:
-        # extract data from the file
-        name_user, message, date_now, time_now, station = line.strip().split(", ")
-
-        # prompt for validation
-        valid_text = input(f"Is this text by {name_user} valid: {message}: ")
-
+while True:
+    with open(file_messages, "r") as file:
         cur = connection.cursor()
+        for line in file:
+            # extract data from the file
+            name_user, message, date_now, time_now, station = line.strip().split(", ")
 
-        # if moderator agrees that the text is valid it will be writen into the database
-        if valid_text in yes_bool:
-            # if the random station is already in the DB it will not write it to it
-            if is_station_in_db(station) is False:
-                # insert station into station table
-                sql_query = "INSERT INTO station (station_name) VALUES (%s)"
-                cur.execute(sql_query, (station,))
+            # prompt for validation
+            valid_text = input(f"Is this text by {name_user} valid: {message}: ")
 
-            # insert user data into the ns_user table
-            insert_script = ("INSERT INTO ns_user (name_column, email_column, date_column,"
-                             "time_column, message_column, station_name) "
-                             "VALUES (%s, %s, %s, %s, %s, %s)")
-            insert_values = (name_user, email, date_now, time_now, message, station)
-            cur.execute(insert_script, insert_values)
-            connection.commit()
+            # if moderator agrees that the text is valid it will be writen into the database
+            if valid_text in yes_bool:
+                email = input("moderator email: ")
+
+                # if the random station is already in the DB it will not write it to it
+                if is_station_in_db(station) is False:
+                    # insert station into station table
+                    sql_query = "INSERT INTO station (station_name) VALUES (%s)"
+                    cur.execute(sql_query, (station,))
+
+                # insert user data into the ns_user table
+                insert_script = ("INSERT INTO ns_user (name_column, email_column, date_column,"
+                                 "time_column, message_column, station_name) "
+                                 "VALUES (%s, %s, %s, %s, %s, %s)")
+                insert_values = (name_user, email, date_now, time_now, message, station)
+                cur.execute(insert_script, insert_values)
+                connection.commit()
+            else:
+                print("There are no text to moderate")
     cur.close()
     connection.close()
-clear_file(input_file_messages)
+    break
+
+clear_file(file_messages)
