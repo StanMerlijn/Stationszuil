@@ -5,8 +5,9 @@ file_messages = "text.csv"
 
 
 def is_yes(input_text):
-    yes_bool = "yesYesYy1jaJajJOKok"
-    return input_text in yes_bool
+    """boolean to check if given input is in yes_bool"""
+    affirmatives = "yesYesYy1jaJajJOKok"
+    return input_text in affirmatives
 
 
 def get_time_date():
@@ -25,7 +26,6 @@ def collect_user_input():
         with open("stations.txt") as file:
             stations = [line.strip() for line in file]
         random_station = random.choice(stations)
-        # here the user inputs there message
         message = input("write your message here: ")
         return name, message, random_station
     return False
