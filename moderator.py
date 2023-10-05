@@ -13,7 +13,6 @@ file_messages = "text.csv"
 
 
 def is_yes(input_text):
-    """boolean to check if given input is yes"""
     yes_bool = "yesYesYy1jaJajJOKok"
     return input_text in yes_bool
 
@@ -44,10 +43,6 @@ def is_station_in_db(cursor, station_name):
     return data > 0
 
 
-if file_not_empty():
-    email = input("before moderating could enter your email: ")
-
-
 def initialize_data(cursor, mod_email, line):
     current_time, current_date = get_time_date()
     name_user, message, date_message, time_message, station = line.strip().split(", ")
@@ -71,8 +66,7 @@ def initialize_data(cursor, mod_email, line):
     return False
 
 
-def write_to_db(filename):
-    cursor = connection.cursor()
+def write_data(cursor, filename, email):
     while file_not_empty():
         with open(filename) as csv_file:
             for line in csv_file:
@@ -81,8 +75,16 @@ def write_to_db(filename):
         clear_file(filename)
     else:
         print("There is no data available to moderate")
-    cursor.close()
-    connection.close()
+
+
+def write_to_db(filename):
+    if file_not_empty():
+        email = input("before moderating could enter your email: ")
+
+        cursor = connection.cursor()
+        write_data(cursor, filename, email)
+        cursor.close()
+        connection.close()
 
 
 write_to_db(file_messages)
