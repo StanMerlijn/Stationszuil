@@ -3,16 +3,17 @@ from datetime import datetime
 
 # connecting to the database
 connection = psycopg2.connect(
-    host="localhost",
-    database="NS messages",
+    host="20.68.149.147",
+    database="NS_messages",
     user="postgres",
-    password="Whynow3421!"
+    password="wachtwoord"
 )
 
 file_messages = "text.csv"
 
 
 def is_yes(input_text):
+    """boolean to check if given input is yes"""
     yes_bool = "yesYesYy1jaJajJOKok"
     return input_text in yes_bool
 
@@ -47,7 +48,7 @@ if file_not_empty():
     email = input("before moderating could enter your email: ")
 
 
-def write_data(cursor, mod_email, line):
+def initialize_data(cursor, mod_email, line):
     current_time, current_date = get_time_date()
     name_user, message, date_message, time_message, station = line.strip().split(", ")
 
@@ -59,12 +60,12 @@ def write_data(cursor, mod_email, line):
             cursor.execute("INSERT INTO station (station_name) VALUES (%s)", (station,))
 
         # insert user data into the ns_user table
-        insert_script = ("INSERT INTO ns_user (name_column, mod_email, date_column,"
-                         "time_column, message_column, station_name, mod_date, mod_time) "
+        insert_script = ("INSERT INTO ns_user (name_column, date_column,"
+                         "time_column, message_column, station_name, mod_email, mod_date, mod_time) "
                          "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
         # The values that will be written to its respectable columns
-        insert_values = (name_user, mod_email, date_message, time_message,
-                         message, station, current_date, current_time)
+        insert_values = (name_user, date_message, time_message,
+                         message, station, mod_email, current_date, current_time)
         cursor.execute(insert_script, insert_values)
         return True
     return False
@@ -75,7 +76,7 @@ def write_to_db(filename):
     while file_not_empty():
         with open(filename) as csv_file:
             for line in csv_file:
-                if write_data(cursor, email, line):
+                if initialize_data(cursor, email, line):
                     connection.commit()
         clear_file(filename)
     else:
