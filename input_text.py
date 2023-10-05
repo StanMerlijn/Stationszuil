@@ -18,8 +18,9 @@ def get_time_date():
 
 
 def collect_user_input():
-    if is_yes(input("do you want to write a message? ")):
-        if is_yes(input("Do you want to use your name(yes or no): ")):
+    print("-" * 50)
+    if is_yes(input(f"do you want to write a message (yes or no): ")):
+        if is_yes(input("Do you want to use your name (yes or no): ")):
             name = input("What is your name: ")
         else:
             name = "anonymous"
