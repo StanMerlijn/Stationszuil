@@ -46,4 +46,5 @@ def write_data_to_file(output_file):
         else:
             break
 
+
 write_data_to_file(file_messages)
