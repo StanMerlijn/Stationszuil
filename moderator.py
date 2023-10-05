@@ -24,6 +24,7 @@ def file_not_empty():
 
 
 def get_time_date():
+    """this function gets the formatted time and date"""
     date = datetime.now().date()
     time = datetime.now().time().strftime("%X")
     return time, date
