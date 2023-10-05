@@ -1,38 +1,46 @@
 import random
 from datetime import datetime
 
-yes_bool = "yesYesYy1jaJajJOKok"
+file_messages = "text.csv"
 
 
-# creating a function to get the current time and date.
+def is_yes(input_text):
+    yes_bool = "yesYesYy1jaJajJOKok"
+    return input_text in yes_bool
+
+
 def get_time_date():
+    """this function gets the formatted time and date"""
     date = datetime.now().date()
     time = datetime.now().time().strftime("%X")
     return time, date
 
 
-while True:
-    randomNr = int(random.random())
-    wants_write = input("do you want to write a message? ")
-    time_now, date_now = get_time_date()
-    if wants_write in yes_bool:
-        wantsName = input("Do you want to use your name(yes or no): ")
-        if wantsName in yes_bool:
-            name = input("What is your name: ")
-        else:
-            name = "anonymous"
-        with open("stations.txt", "r") as file:
-            lines = file.readlines()
-        # generates a random number under the amount of lines in stations.txt. then retrieves a that random station
-        random_line_number = random.randint(0, len(lines) - 1)
-        station = lines[random_line_number].strip()
+def collect_write_message(output_file):
+    while True:
+        time_now, date_now = get_time_date()
+        if is_yes(input("do you want to write a message? ")):
+            if is_yes(input("Do you want to use your name(yes or no): ")):
+                name = input("What is your name: ")
+            else:
+                name = "anonymous"
 
-        # here the user inputs there message
-        message = input("write your message here: ")
-        if len(message) >= 140:
-            print("your message should be less than 140 characters")
-        if len(message) <= 140:
-            with open("text.csv", "a") as csv_file:
-                csv_file.write(f"{name}, {message}, {date_now}, {time_now}, {station}\n")
-    else:
-        break
+            with open("stations.txt") as file:
+                stations = [line.strip() for line in file]
+            random_station = random.choice(stations)
+
+            # here the user inputs there message
+            message = input("write your message here: ")
+            if len(message) >= 140:
+                print("your message should be less than 140 characters")
+            else:
+                with open(output_file, "a") as csv_file:
+                    csv_file.write(f"{name}, {message}, {date_now}, {time_now}, {random_station}\n")
+            return True
+        return False
+
+
+# def write_data_to_file(name, message, random_station, outputfile):
+
+
+print(collect_write_message(file_messages))
