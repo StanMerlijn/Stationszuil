@@ -2,7 +2,7 @@ import random
 from datetime import datetime
 
 
-def is_yes(input_text):
+def is_input_yes(input_text):
     yes_bool = "yesYesYy1jaJajJOKok"
     return input_text in yes_bool
 
@@ -16,8 +16,8 @@ def get_time_date():
 
 def collect_user_input():
     print("-" * 50)
-    if is_yes(input(f"do you want to write a message (yes or no): ")):
-        if is_yes(input("Do you want to use your name (yes or no): ")):
+    if is_input_yes(input(f"do you want to write a message (yes or no): ")):
+        if is_input_yes(input("Do you want to use your name (yes or no): ")):
             name = input("What is your name: ")
         else:
             name = "anonymous"
