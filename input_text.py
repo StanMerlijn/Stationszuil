@@ -1,13 +1,10 @@
 import random
 from datetime import datetime
 
-file_messages = "text.csv"
-
 
 def is_yes(input_text):
-    """boolean to check if given input is in yes_bool"""
-    affirmatives = "yesYesYy1jaJajJOKok"
-    return input_text in affirmatives
+    yes_bool = "yesYesYy1jaJajJOKok"
+    return input_text in yes_bool
 
 
 def get_time_date():
@@ -26,7 +23,7 @@ def collect_user_input():
             name = "anonymous"
         with open("stations.txt") as file:
             stations = [line.strip() for line in file]
-        random_station = random.choice(stations)
+        random_station = random.choice(stations)  # chooses a random station from file
         message = input("write your message here: ")
         return name, message, random_station
 
@@ -48,4 +45,6 @@ def write_data_to_file(output_file):
             break
 
 
-write_data_to_file(file_messages)
+if __name__ == "__main__":
+    file_messages = "text.csv"
+    write_data_to_file(file_messages)
