@@ -30,10 +30,10 @@ def get_time_date():
     return time, date
 
 
-def clear_file(input_file):
-    """"this function clears the file when called"""
-    with open(input_file, "w"):
-        return
+def write_to_clean_file(filename, data_to_file):
+    with open(filename, "w") as csv_file:
+        for item in data_to_file:
+            csv_file.write(f"{item}\n")
 
 
 def is_station_in_db(cursor, station_name):
@@ -41,6 +41,7 @@ def is_station_in_db(cursor, station_name):
     cursor.execute("SELECT COUNT(*) FROM station WHERE station_name = %s", (station_name,))
     data = cursor.fetchone()[0]
     return data > 0
+
 
 
 def initialize_data(cursor, mod_email, line):
@@ -68,26 +69,24 @@ def initialize_data(cursor, mod_email, line):
 
 
 def write_data(cursor, filename, email):
-    exit_bool = False
-    cheeks = []
+    data_back_to_file = []
+    lines_index = 0
     with open(filename) as csv_file:
-        # all_messages = csv_file.readlines()
-        # print(all_messages)
-        while not exit_bool:
-            for line in csv_file:
-                cheeks.append(line)
-                print(cheeks)
-                print(r"{}\\n".format(line))
-                bool_approved, user_input = initialize_data(cursor, email, line)
-                if bool_approved:
-                    # connection.commit()
-                    print(f"{line}\\n")
+        all_messages = [line.strip() for line in csv_file.readlines()]
+        while lines_index < len(all_messages):
+            line = all_messages[lines_index]
+            bool_approved, user_input = initialize_data(cursor, email, line)
 
-                    cheeks.remove(f"{line}\\n")
-                    # print(all_messages)
-                elif user_input.lower() == "exit":
-                    exit_bool = True
-                    break
+            # if user inputs exit when asked if text valid it will return every message back to file
+            if user_input.lower() == "exit":
+                data_back_to_file.extend(all_messages[lines_index:])
+                write_to_clean_file(filename, data_back_to_file)
+                break
+
+            if bool_approved:
+                connection.commit()
+
+            lines_index += 1
 
 
 def write_to_db(filename):
