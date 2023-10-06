@@ -69,15 +69,21 @@ def initialize_data(cursor, mod_email, line):
 
 def write_data(cursor, filename, email):
     exit_bool = False
+    cheeks = []
     with open(filename) as csv_file:
-        all_messages = csv_file.readlines()
-        print(all_messages)
+        # all_messages = csv_file.readlines()
+        # print(all_messages)
         while not exit_bool:
             for line in csv_file:
+                cheeks.append(line)
+                print(cheeks)
+                print(r"{}\\n".format(line))
                 bool_approved, user_input = initialize_data(cursor, email, line)
                 if bool_approved:
-                    connection.commit()
-                    # all_messages.remove(f"{line}\\n")
+                    # connection.commit()
+                    print(f"{line}\\n")
+
+                    cheeks.remove(f"{line}\\n")
                     # print(all_messages)
                 elif user_input.lower() == "exit":
                     exit_bool = True
