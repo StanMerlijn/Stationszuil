@@ -1,15 +1,16 @@
 import psycopg2
 from datetime import datetime
 
-# connecting to the database
-connection = psycopg2.connect(
-    host="localhost",
-    database="NS messages",
-    user="postgres",
-    password="Whynow3421!"
-)
 
-file_messages = "text.csv"
+def connect_to_db():
+    # connecting to the database
+    connection = psycopg2.connect(
+        host="localhost",
+        database="NS messages",
+        user="postgres",
+        password="Whynow3421!"
+    )
+    return connection
 
 
 def is_yes(input_text):
@@ -67,7 +68,7 @@ def initialize_data(cursor, mod_email, line):
     return False, user_input
 
 
-def write_data(cursor, filename, email):
+def write_data(connection, cursor, filename, email):
     data_back_to_file = []
     lines_index = 0
     with open(filename) as csv_file:
@@ -92,13 +93,15 @@ def write_to_db(filename):
     if file_not_empty():
 
         email = input("before moderating could enter your email: ")
-
+        connection = connect_to_db()
         cursor = connection.cursor()
-        write_data(cursor, filename, email)
+        write_data(connection, cursor, filename, email)
         cursor.close()
         connection.close()
     else:
         print("there is no data to moderate")
 
 
-write_to_db(file_messages)
+if __name__ == "__main__":
+    file_messages = "text.csv"
+    write_to_db(file_messages)
