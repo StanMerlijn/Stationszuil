@@ -1,5 +1,5 @@
 import psycopg2
-from datetime import datetime
+from input_text import get_time_date, is_yes
 
 
 def connect_to_db():
@@ -13,22 +13,10 @@ def connect_to_db():
     return connection
 
 
-def is_yes(input_text):
-    yes_bool = "yesYesYy1jaJajJOKok"
-    return input_text in yes_bool
-
-
 def file_not_empty():
     with open(file_messages) as csv_file:
         lines = csv_file.readlines()
         return len(lines) != 0
-
-
-def get_time_date():
-    """this function gets the formatted time and date"""
-    date = datetime.now().date()
-    time = datetime.now().time().strftime("%X")
-    return time, date
 
 
 def write_to_clean_file(filename, data_to_file):
