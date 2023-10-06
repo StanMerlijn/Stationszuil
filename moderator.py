@@ -43,7 +43,6 @@ def is_station_in_db(cursor, station_name):
     return data > 0
 
 
-
 def initialize_data(cursor, mod_email, line):
     current_time, current_date = get_time_date()
     name_user, message, date_message, time_message, station = line.strip().split(", ")
