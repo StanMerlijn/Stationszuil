@@ -12,7 +12,7 @@ def button_add():
     global f_num
     global math
     math = "add"
-    f_num = int(first_number)
+    f_num = float(first_number)
     entry.delete(0, END)
 
 
@@ -21,7 +21,7 @@ def button_subtract():
     global f_num
     global math
     math = "subtract"
-    f_num = int(first_number)
+    f_num = float(first_number)
     entry.delete(0, END)
 
 
@@ -30,7 +30,7 @@ def button_divide():
     global f_num
     global math
     math = "divide"
-    f_num = int(first_number)
+    f_num = float(first_number)
     entry.delete(0, END)
 
 
@@ -39,21 +39,29 @@ def button_multiply():
     global f_num
     global math
     math = "multiply"
-    f_num = int(first_number)
+    f_num = float(first_number)
     entry.delete(0, END)
+
+
+def button_comma():
+    current = entry.get()
+    entry.delete(0, END)
+    current = str(current) + "."
+    float(current)
+    entry.insert(0, current)
 
 
 def button_equal():
     second_number = entry.get()
     entry.delete(0, END)
     if math == "add":
-        entry.insert(0, f_num + int(second_number))
+        entry.insert(0, f_num + float(second_number))
     if math == "subtract":
-        entry.insert(0, f_num - int(second_number))
+        entry.insert(0, f_num - float(second_number))
     if math == "multiply":
-        entry.insert(0, f_num * int(second_number))
+        entry.insert(0, f_num * float(second_number))
     if math == "divide":
-        entry.insert(0, f_num / int(second_number))
+        entry.insert(0, f_num / float(second_number))
 
 
 def button_clear():
@@ -65,6 +73,7 @@ def button_click(number):
     current = entry.get()
     entry.delete(0, END)
     entry.insert(0, str(current) + str(number))
+
 
 button_bw = 2
 
@@ -85,6 +94,7 @@ button_clear = Button(root, text="clear", padx=79, pady=20, command=button_clear
 button_sub = Button(root, text="-", padx=41, pady=20, command=button_subtract, borderwidth=button_bw)
 button_mult = Button(root, text="*", padx=40, pady=20, command=button_multiply, borderwidth=button_bw)
 button_divide = Button(root, text="/", padx=42, pady=20, command=button_divide, borderwidth=button_bw)
+button_comma = Button(root, text=".", padx=42, pady=20, command=button_comma, borderwidth=button_bw)
 
 
 button_1.grid(row=3, column=0)
@@ -107,5 +117,6 @@ button_equal.grid(row=6, column=1, columnspan=2)
 button_mult.grid(row=4, column=2)
 button_sub.grid(row=6, column=0)
 button_divide.grid(row=4, column=1)
+button_comma.grid(row=7, column=1)
 
 root.mainloop()
