@@ -1,37 +1,48 @@
 import tkinter as tk
 import ttkbootstrap as ttk
 
-root = ttk.Window(themename="darkly")
-root.title("entering message")
 
-root.geometry("300x150")
-
-title_label = ttk.Label(master=root, text="write your message here")
-entry_message = ttk.Entry(root, width=20)
-entry_name = ttk.Entry(root, width=20)
-
-entry_name.pack()
-entry_message.pack(side="left")
-
-# entry_message.grid(row=1, column=1, columnspan=3, padx=10, pady=10, )
-# entry_name.grid(row=0, column=1, columnspan=1, padx=10, pady=10, )
-
-
+# save name
 def get_user_data():
-    message = entry_message.get()
-    name = entry_name.get()
+    user_message = entry_message.get()
+    user_name = entry_name.get()
 
-    if name == "":
-        name = "anonymous"
+    if user_name == "":
+        user_name = "anonymous"
     entry_name.delete(0, tk.END)
     entry_message.delete(0, tk.END)
 
-    print(f"{message} by {name}")
+    print(f"{user_message} by {user_name}")
 
 
-button_send = ttk.Button(root, text="send message", command=get_user_data)
-# button_send.grid(row=2, column=0, columnspan=4, padx=10, pady=10)
+def exit_menu():
+    window.destroy()
 
-button_send.pack(side="left", padx=10)
 
-root.mainloop()
+# window
+window = ttk.Window(themename="darkly")
+window.title("entering message")
+window.geometry("800x500")
+
+# entry fields
+title_name = ttk.Label(master=window, text="Enter your name")
+title_name.pack()
+
+entry_name = ttk.Entry(master=window)
+entry_name.pack()
+
+title_message = ttk.Label(master=window, text="Enter your message")
+title_message.pack()
+
+entry_message = ttk.Entry(master=window)
+entry_message.pack(ipadx=250)
+
+# button
+button_send_data = ttk.Button(master=window, text="send message", command=get_user_data)
+button_send_data.pack(padx=10, pady=5)
+
+button_exit = ttk.Button(master=window, text="exit", command=exit_menu)
+button_exit.pack(padx=10)
+
+# run
+window.mainloop()
