@@ -21,6 +21,12 @@ def is_station_in_db(cursor, station_name):
     return data > 0
 
 
+def add_station_if_not_found(cursor, message_data):
+    random_station = message_data[4]
+    if not is_station_in_db(cursor, random_station):
+        cursor.execute("INSERT INTO station (station_name) VALUES (%s)", (random_station,))
+
+
 def clear_file(filename):
     with open(filename, "w") as file:
         file.truncate()
@@ -38,15 +44,11 @@ def get_time_date():
     return time, date
 
 
-def prepare_message_data(cursor, message_data):
-    random_station = message_data[4]
+def prepare_message_data():
     # data to insert into DB
     insert_script = ("INSERT INTO ns_user (name_column, date_column, time_column, "
                      "message_column, station_name, bool_approved)"
                      "VALUES (%s, %s, %s, %s, %s, %s)")
-    if not is_station_in_db(cursor, random_station):
-        cursor.execute("INSERT INTO station (station_name) VALUES (%s)", (random_station,))
-
     return insert_script
 
 
@@ -72,9 +74,9 @@ def collect_user_input():
 
 def write_data_to_file(output_file):
     while True:
-        user_data = collect_user_input()
-        if user_data:
-            name, message, random_station, time_now, date_now = user_data
+        is_valid, message_data = collect_user_input()
+        if is_valid:
+            name, date_now, time_now, message, random_station, bool_approved = message_data
             if len(message) >= 140:
                 print("your message should be less than 140 characters")
             else:
@@ -84,21 +86,27 @@ def write_data_to_file(output_file):
             break
 
 
-def write_data_to_db():
-    while True:
-        bool_val, message_data = collect_user_input()
+def write_data_to_db(cursor, message_data, connection):
+    insert_script = prepare_message_data()
+    cursor.execute(insert_script, message_data)
+    connection.commit()
 
-        if bool_val:
-            with connect_to_db() as connection, connection.cursor() as cursor:
-                insert_script = prepare_message_data(cursor, message_data)
-                cursor.execute(insert_script, message_data)
-                connection.commit()
-        else:
-            break
+
+def main():
+    file_messages = "text.csv"
+    where_to_write = int(input("do oy want to write to the DB(if not it will write to file): "))
+    if where_to_write == 1:
+        with connect_to_db() as connection, connection.cursor() as cursor:
+            while True:
+                is_valid, message_data = collect_user_input()
+                if is_valid:
+                    add_station_if_not_found(cursor, message_data)
+                    write_data_to_db(cursor, message_data, connection)
+                else:
+                    break
+    else:
+        write_data_to_file(file_messages)
 
 
 if __name__ == "__main__":
-    file_messages = "text.csv"
-    # write_data_to_file(file_messages)
-    write_data_to_db()
-
+    main()
