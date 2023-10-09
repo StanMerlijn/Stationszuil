@@ -1,5 +1,5 @@
 import psycopg2
-from input_text import get_time_date, is_input_yes, clear_file, connect_to_db
+from input_text import *
 
 
 def file_not_empty():
@@ -22,16 +22,13 @@ def is_station_in_db(cursor, station_name):
 
 
 def prepare_user_data(user_data):
-
     insert_script = ("INSERT INTO ns_user (name_column, date_column, time_column, "
                      "message_column, station_name, mod_email, "
                      "mod_date, mod_time, bool_approved) "
                      "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
     # The values that will be written to its respectable columns
-    insert_values = (user_data['name_user'], user_data['date_message'], user_data['time_message'],
-                     user_data['message'], user_data['station'], user_data['mod_email'],
-                     user_data['current_date'], user_data['current_time'], user_data['bool_approved'])
+    insert_values = (*user_data.values(),)
     return insert_script, insert_values
 
 
@@ -67,16 +64,18 @@ def initialize_data(cursor, mod_email, line):
     return False, user_input
 
 
-def write_data(connection, cursor, filename, email):
+def write_data(connection, cursor, filename, mod_email):
+    # puts all lines from the csv file into a list
     with open(filename) as csv_file:
         all_messages = [line.strip() for line in csv_file.readlines()]
 
     len_messages = len(all_messages)
     lines_index = 0
 
+    # when a list is moderated lines_index will increase by 1
     while lines_index < len_messages:
         line = all_messages[lines_index]
-        bool_approved, user_input = initialize_data(cursor, email, line)
+        bool_approved, user_input = initialize_data(cursor, mod_email, line)
 
         # commits to DB if message = valid
         if bool_approved:
@@ -98,12 +97,11 @@ def write_data(connection, cursor, filename, email):
 
 def send_data(filename):
     if file_not_empty():
-
         email = input("before moderating could enter your email: ")
         with connect_to_db() as connection, connection.cursor() as cursor:
             write_data(connection, cursor, filename, email)
     else:
-        print("there is no data to moderate")
+        print("There no more messages to moderate")
 
 
 if __name__ == "__main__":
