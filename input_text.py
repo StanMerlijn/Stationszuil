@@ -2,6 +2,11 @@ import random
 from datetime import datetime
 
 
+def clear_file(filename):
+    with open(filename, "w") as file:
+        file.truncate()
+
+
 def is_input_yes(input_text):
     yes_bool = "yesYesYy1jaJajJOKok"
     return input_text in yes_bool
