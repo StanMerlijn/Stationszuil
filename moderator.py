@@ -3,7 +3,7 @@ from input_text import get_time_date, is_input_yes
 
 
 def connect_to_db():
-    # connecting to the database
+    # connecting to the database. local
     connection = psycopg2.connect(
         host="localhost",
         database="NS messages",
