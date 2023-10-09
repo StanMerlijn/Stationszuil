@@ -14,7 +14,15 @@ def get_user_data():
 
     print(f"{user_message} by {user_name}")
 
-# exit window
+
+def wants_name():
+    entry_name.delete(0, tk.END)
+    if radio_var.get() == 0:
+        entry_name["state"] = "disabled"
+    else:
+        entry_name['state'] = "normal"
+
+
 def exit_menu():
     window.destroy()
 
@@ -27,6 +35,12 @@ window.geometry("800x500")
 # entry fields
 title_name = ttk.Label(master=window, text="Enter your name")
 title_name.pack()
+
+radio_var = tk.IntVar(value=0)
+radio_button1 = ttk.Radiobutton(window, text="yes", value=1, variable=radio_var, command=wants_name)
+radio_button1.pack()
+radio_button2 = ttk.Radiobutton(window, text="no", value=0, variable=radio_var, command=wants_name)
+radio_button2.pack()
 
 entry_name = ttk.Entry(master=window)
 entry_name.pack()
