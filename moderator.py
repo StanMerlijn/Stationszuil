@@ -1,16 +1,5 @@
 import psycopg2
-from input_text import get_time_date, is_input_yes, clear_file
-
-
-def connect_to_db():
-    # connecting to the database. local
-    connection = psycopg2.connect(
-        host="localhost",
-        database="NS messages",
-        user="postgres",
-        password="Whynow3421!"
-    )
-    return connection
+from input_text import get_time_date, is_input_yes, clear_file, connect_to_db
 
 
 def file_not_empty():
@@ -32,17 +21,19 @@ def is_station_in_db(cursor, station_name):
     return data > 0
 
 
-def prepare_user_data(line, mod_email):
+def prepare_user_data(line, mod_email, bool_approved):
     current_time, current_date = get_time_date()
     name_user, message, date_message, time_message, station = line.strip().split(", ")
 
-    insert_script = ("INSERT INTO ns_user (name_column, date_column,"
-                     "time_column, message_column, station_name, mod_email, mod_date, mod_time) "
-                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
+    insert_script = ("INSERT INTO ns_user (name_column, date_column, time_column, "
+                     "message_column, station_name, mod_email, "
+                     "mod_date, mod_time, bool_approved) "
+                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
     # The values that will be written to its respectable columns
     insert_values = (name_user, date_message, time_message,
-                     message, station, mod_email, current_date, current_time)
+                     message, station, mod_email,
+                     current_date, current_time, bool_approved)
     return insert_script, insert_values
 
 
@@ -52,13 +43,14 @@ def initialize_data(cursor, mod_email, line):
     user_input = input(f"Is this text by {name_user} valid: {message}: ")
     # if moderator agrees that the text is valid it will be writen into the database
     if is_input_yes(user_input):
+        bool_approved = True
 
         # if the random station is already in the DB it will not write it to it
         if not is_station_in_db(cursor, station):
             cursor.execute("INSERT INTO station (station_name) VALUES (%s)", (station,))
 
         # insert user data into the ns_user table
-        insert_script, insert_value = prepare_user_data(line, mod_email)
+        insert_script, insert_value = prepare_user_data(line, mod_email, bool_approved)
         cursor.execute(insert_script, insert_value)
         return True, user_input
     return False, user_input
