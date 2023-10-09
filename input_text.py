@@ -14,6 +14,13 @@ def connect_to_db():
     return connection
 
 
+def is_station_in_db(cursor, station_name):
+    """"boolean function to check if a station is already in the database"""
+    cursor.execute("SELECT COUNT(*) FROM station WHERE station_name = %s", (station_name,))
+    data = cursor.fetchone()[0]
+    return data > 0
+
+
 def clear_file(filename):
     with open(filename, "w") as file:
         file.truncate()
@@ -31,13 +38,16 @@ def get_time_date():
     return time, date
 
 
-def prepare_message_data():
-    yes_bool, message_data = collect_user_input()
-    print(message_data)
+def prepare_message_data(cursor, message_data):
+    random_station = message_data[4]
+    # data to insert into DB
     insert_script = ("INSERT INTO ns_user (name_column, date_column, time_column, "
                      "message_column, station_name, bool_approved)"
                      "VALUES (%s, %s, %s, %s, %s, %s)")
-    return insert_script, message_data
+    if not is_station_in_db(cursor, random_station):
+        cursor.execute("INSERT INTO station (station_name) VALUES (%s)", (random_station,))
+
+    return insert_script
 
 
 def collect_user_input():
@@ -45,6 +55,7 @@ def collect_user_input():
     print("-" * 50)
     if is_input_yes(input(f"do you want to write a message (yes or no): ")):
         bool_approved = False
+
         if is_input_yes(input("Do you want to use your name (yes or no): ")):
             name = input("What is your name: ")
         else:
@@ -56,7 +67,7 @@ def collect_user_input():
 
         message_data = name, date_now, time_now, message, random_station, bool_approved
         return True, message_data
-    return False
+    return False, None
 
 
 def write_data_to_file(output_file):
@@ -74,16 +85,20 @@ def write_data_to_file(output_file):
 
 
 def write_data_to_db():
-    yes_bool, message_data = collect_user_input()
-    if yes_bool:
-        insert_script, insert_values = prepare_message_data()
-        with connect_to_db() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(insert_script, insert_values)
-            connection.commit()
+    while True:
+        bool_val, message_data = collect_user_input()
+
+        if bool_val:
+            with connect_to_db() as connection, connection.cursor() as cursor:
+                insert_script = prepare_message_data(cursor, message_data)
+                cursor.execute(insert_script, message_data)
+                connection.commit()
+        else:
+            break
 
 
 if __name__ == "__main__":
     file_messages = "text.csv"
     # write_data_to_file(file_messages)
     write_data_to_db()
+
