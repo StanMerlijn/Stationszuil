@@ -1,5 +1,17 @@
 import random
+import psycopg2
 from datetime import datetime
+
+
+def connect_to_db():
+    # connecting to the database. local
+    connection = psycopg2.connect(
+        host="localhost",
+        database="NS messages",
+        user="postgres",
+        password="Whynow3421!"
+    )
+    return connection
 
 
 def clear_file(filename):
@@ -8,8 +20,8 @@ def clear_file(filename):
 
 
 def is_input_yes(input_text):
-    yes_bool = "yesYesYy1jaJajJOKok"
-    return input_text in yes_bool
+    yes_bool = ["yes", "y", "ye"]
+    return input_text.lower() in yes_bool
 
 
 def get_time_date():
@@ -20,6 +32,7 @@ def get_time_date():
 
 
 def collect_user_input():
+    time_now, date_now = get_time_date()
     print("-" * 50)
     if is_input_yes(input(f"do you want to write a message (yes or no): ")):
         if is_input_yes(input("Do you want to use your name (yes or no): ")):
@@ -30,16 +43,15 @@ def collect_user_input():
             stations = [line.strip() for line in file]
         random_station = random.choice(stations)  # chooses a random station from file
         message = input("write your message here: ")
-        return name, message, random_station
+        return name, message, random_station, time_now, date_now
     return False
 
 
 def write_data_to_file(output_file):
     while True:
-        time_now, date_now = get_time_date()
         user_data = collect_user_input()
         if user_data:
-            name, message, random_station = user_data
+            name, message, random_station, time_now, date_now = user_data
             if len(message) >= 140:
                 print("your message should be less than 140 characters")
             else:
@@ -47,6 +59,11 @@ def write_data_to_file(output_file):
                     csv_file.write(f"{name}, {message}, {date_now}, {time_now}, {random_station}\n")
         else:
             break
+
+
+def write_data_to_db():
+    with connect_to_db() as connection, connection.cursor() as cursor:
+        return
 
 
 if __name__ == "__main__":
