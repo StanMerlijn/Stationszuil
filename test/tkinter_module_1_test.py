@@ -14,7 +14,7 @@ def get_user_data():
 
     print(f"{user_message} by {user_name}")
 
-
+# exit window
 def exit_menu():
     window.destroy()
 
