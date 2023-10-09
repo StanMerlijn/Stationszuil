@@ -31,10 +31,20 @@ def get_time_date():
     return time, date
 
 
+def prepare_message_data():
+    yes_bool, message_data = collect_user_input()
+    print(message_data)
+    insert_script = ("INSERT INTO ns_user (name_column, date_column, time_column, "
+                     "message_column, station_name, bool_approved)"
+                     "VALUES (%s, %s, %s, %s, %s, %s)")
+    return insert_script, message_data
+
+
 def collect_user_input():
     time_now, date_now = get_time_date()
     print("-" * 50)
     if is_input_yes(input(f"do you want to write a message (yes or no): ")):
+        bool_approved = False
         if is_input_yes(input("Do you want to use your name (yes or no): ")):
             name = input("What is your name: ")
         else:
@@ -43,7 +53,9 @@ def collect_user_input():
             stations = [line.strip() for line in file]
         random_station = random.choice(stations)  # chooses a random station from file
         message = input("write your message here: ")
-        return name, message, random_station, time_now, date_now
+
+        message_data = name, date_now, time_now, message, random_station, bool_approved
+        return True, message_data
     return False
 
 
@@ -62,10 +74,16 @@ def write_data_to_file(output_file):
 
 
 def write_data_to_db():
-    with connect_to_db() as connection, connection.cursor() as cursor:
-        return
+    yes_bool, message_data = collect_user_input()
+    if yes_bool:
+        insert_script, insert_values = prepare_message_data()
+        with connect_to_db() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(insert_script, insert_values)
+            connection.commit()
 
 
 if __name__ == "__main__":
     file_messages = "text.csv"
-    write_data_to_file(file_messages)
+    # write_data_to_file(file_messages)
+    write_data_to_db()
