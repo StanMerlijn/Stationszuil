@@ -32,8 +32,21 @@ def is_station_in_db(cursor, station_name):
     return data > 0
 
 
-def initialize_data(cursor, mod_email, line):
+def prepare_user_data(line, mod_email):
     current_time, current_date = get_time_date()
+    name_user, message, date_message, time_message, station = line.strip().split(", ")
+
+    insert_script = ("INSERT INTO ns_user (name_column, date_column,"
+                     "time_column, message_column, station_name, mod_email, mod_date, mod_time) "
+                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
+
+    # The values that will be written to its respectable columns
+    insert_values = (name_user, date_message, time_message,
+                     message, station, mod_email, current_date, current_time)
+    return insert_script, insert_values
+
+
+def initialize_data(cursor, mod_email, line):
     name_user, message, date_message, time_message, station = line.strip().split(", ")
 
     user_input = input(f"Is this text by {name_user} valid: {message}: ")
@@ -41,17 +54,12 @@ def initialize_data(cursor, mod_email, line):
     if is_input_yes(user_input):
 
         # if the random station is already in the DB it will not write it to it
-        if is_station_in_db(cursor, station) is False:
+        if not is_station_in_db(cursor, station):
             cursor.execute("INSERT INTO station (station_name) VALUES (%s)", (station,))
 
         # insert user data into the ns_user table
-        insert_script = ("INSERT INTO ns_user (name_column, date_column,"
-                         "time_column, message_column, station_name, mod_email, mod_date, mod_time) "
-                         "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
-        # The values that will be written to its respectable columns
-        insert_values = (name_user, date_message, time_message,
-                         message, station, mod_email, current_date, current_time)
-        cursor.execute(insert_script, insert_values)
+        insert_script, insert_value = prepare_user_data(line, mod_email)
+        cursor.execute(insert_script, insert_value)
         return True, user_input
     return False, user_input
 
@@ -77,19 +85,18 @@ def write_data(connection, cursor, filename, email):
             lines_index += 1
 
 
-def write_to_db(filename):
+def send_data(filename):
     if file_not_empty():
 
         email = input("before moderating could enter your email: ")
-        connection = connect_to_db()
-        cursor = connection.cursor()
-        write_data(connection, cursor, filename, email)
-        cursor.close()
-        connection.close()
+        with connect_to_db() as connection, connection.cursor() as cursor:
+            write_data(connection, cursor, filename, email)
+            cursor.close()
+            connection.close()
     else:
         print("there is no data to moderate")
 
 
 if __name__ == "__main__":
     file_messages = "text.csv"
-    write_to_db(file_messages)
+    send_data(file_messages)
