@@ -14,21 +14,14 @@ def write_to_clean_file(filename, data_to_file):
             csv_file.write(f"{item}\n")
 
 
-def is_station_in_db(cursor, station_name):
-    """"boolean function to check if a station is already in the database"""
-    cursor.execute("SELECT COUNT(*) FROM station WHERE station_name = %s", (station_name,))
-    data = cursor.fetchone()[0]
-    return data > 0
-
-
-def prepare_user_data(user_data):
+def prepare_user_data(message_data):
     insert_script = ("INSERT INTO ns_user (name_column, date_column, time_column, "
                      "message_column, station_name, mod_email, "
                      "mod_date, mod_time, bool_approved) "
                      "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
     # The values that will be written to its respectable columns
-    insert_values = (*user_data.values(),)
+    insert_values = (*message_data.values(),)
     return insert_script, insert_values
 
 
@@ -45,7 +38,7 @@ def initialize_data(cursor, mod_email, line):
         if not is_station_in_db(cursor, station):
             cursor.execute("INSERT INTO station (station_name) VALUES (%s)", (station,))
 
-        user_data = {
+        message_data = {
             'name_user': name_user,
             'date_message': date_message,
             'time_message': time_message,
@@ -58,7 +51,7 @@ def initialize_data(cursor, mod_email, line):
         }
 
         # insert user data into the ns_user table
-        insert_script, insert_value = prepare_user_data(user_data)
+        insert_script, insert_value = prepare_user_data(message_data)
         cursor.execute(insert_script, insert_value)
         return True, user_input
     return False, user_input
