@@ -26,7 +26,6 @@ def collect_user_input():
         random_station = random.choice(stations)  # chooses a random station from file
         message = input("write your message here: ")
         return name, message, random_station
-
     return False
 
 
