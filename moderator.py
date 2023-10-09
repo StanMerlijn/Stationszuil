@@ -1,5 +1,5 @@
 import psycopg2
-from input_text import get_time_date, is_input_yes
+from input_text import get_time_date, is_input_yes, clear_file
 
 
 def connect_to_db():
@@ -65,24 +65,33 @@ def initialize_data(cursor, mod_email, line):
 
 
 def write_data(connection, cursor, filename, email):
-    data_back_to_file = []
-    lines_index = 0
     with open(filename) as csv_file:
         all_messages = [line.strip() for line in csv_file.readlines()]
-        while lines_index < len(all_messages):
-            line = all_messages[lines_index]
-            bool_approved, user_input = initialize_data(cursor, email, line)
 
-            # if user inputs exit when asked if text valid it will return every message back to file
-            if user_input.lower() == "exit":
-                data_back_to_file.extend(all_messages[lines_index:])
-                write_to_clean_file(filename, data_back_to_file)
-                break
+    data_back_to_file = []
+    len_messages = len(all_messages)
+    lines_index = 0
 
-            if bool_approved:
-                connection.commit()
+    while lines_index < len_messages:
+        line = all_messages[lines_index]
+        bool_approved, user_input = initialize_data(cursor, email, line)
 
-            lines_index += 1
+        # commits to DB if message = valid
+        if bool_approved:
+            connection.commit()
+
+        # clears file if all messages are moderated
+        if (lines_index + 1) == len_messages:
+            print("no more messages to moderate")
+            clear_file(filename)
+
+        # if user inputs exit when asked if text valid it will return every message back to file
+        if user_input.lower() == "exit":
+            data_back_to_file.extend(all_messages[lines_index:])
+            write_to_clean_file(filename, data_back_to_file)
+            break
+
+        lines_index += 1
 
 
 def send_data(filename):
@@ -91,8 +100,6 @@ def send_data(filename):
         email = input("before moderating could enter your email: ")
         with connect_to_db() as connection, connection.cursor() as cursor:
             write_data(connection, cursor, filename, email)
-            cursor.close()
-            connection.close()
     else:
         print("there is no data to moderate")
 
