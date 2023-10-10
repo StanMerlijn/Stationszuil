@@ -47,8 +47,8 @@ def get_time_date():
 def prepare_message_data():
     # data to insert into DB
     insert_script = ("INSERT INTO message_send (name_user, date_message, time_message, "
-                     "message, station_name, bool_approved)"
-                     "VALUES (%s, %s, %s, %s, %s, %s)")
+                     "message, station_name)"
+                     "VALUES (%s, %s, %s, %s, %s)")
     return insert_script
 
 
@@ -56,7 +56,6 @@ def collect_user_input():
     time_now, date_now = get_time_date()
     print("-" * 50)
     if is_input_yes(input(f"do you want to write a message (yes or no): ")):
-        bool_approved = 0
 
         if is_input_yes(input("Do you want to use your name (yes or no): ")):
             name = input("What is your name: ")
@@ -67,7 +66,7 @@ def collect_user_input():
         random_station = random.choice(stations)  # chooses a random station from file
         message = input("write your message here: ")
 
-        message_data = name, date_now, time_now, message, random_station, bool_approved
+        message_data = name, date_now, time_now, message, random_station
         return True, message_data
     return False, None
 
