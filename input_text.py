@@ -46,8 +46,8 @@ def get_time_date():
 
 def prepare_message_data():
     # data to insert into DB
-    insert_script = ("INSERT INTO ns_user (name_column, date_column, time_column, "
-                     "message_column, station_name, bool_approved)"
+    insert_script = ("INSERT INTO message_send (name_user, date_message, time_message, "
+                     "message, station_name, bool_approved)"
                      "VALUES (%s, %s, %s, %s, %s, %s)")
     return insert_script
 
