@@ -32,7 +32,7 @@ def initialize_data(cursor, mod_email, line):
     user_input = input(f"Is this text by {name_user} valid: {message}: ")
     # if moderator agrees that the text is valid it will be writen into the database
     if is_input_yes(user_input):
-        bool_approved = True
+        bool_approved = 1
 
         # if the random station is already in the DB it will not write it to it
         if not is_station_in_db(cursor, station):

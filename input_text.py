@@ -56,7 +56,7 @@ def collect_user_input():
     time_now, date_now = get_time_date()
     print("-" * 50)
     if is_input_yes(input(f"do you want to write a message (yes or no): ")):
-        bool_approved = False
+        bool_approved = 0
 
         if is_input_yes(input("Do you want to use your name (yes or no): ")):
             name = input("What is your name: ")
