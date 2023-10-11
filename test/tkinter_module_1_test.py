@@ -42,7 +42,9 @@ radio_button1.pack()
 radio_button2 = ttk.Radiobutton(window, text="no", value=0, variable=radio_var, command=wants_name)
 radio_button2.pack()
 
-entry_name = ttk.Entry(master=window)
+user_name2 = tk.StringVar
+entry_name = ttk.Entry(master=window, state="disabled")
+
 entry_name.pack()
 
 title_message = ttk.Label(master=window, text="Enter your message")
