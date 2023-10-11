@@ -79,8 +79,7 @@ def write_data_to_db(cursor, message_data, connection):
     connection.commit()
 
 
-def main():
-    file_messages = "text.csv"
+def main(filename):
     where_to_write = int(input("Write to DB else it will be file: "))
     if where_to_write == 1:
         with connect_to_db() as connection, connection.cursor() as cursor:
@@ -91,8 +90,9 @@ def main():
                 else:
                     break
     else:
-        write_data_to_file(file_messages)
+        write_data_to_file(filename)
 
 
 if __name__ == "__main__":
-    main()
+    file_messages = "text.csv"
+    main(file_messages)
