@@ -1,4 +1,3 @@
-import psycopg2
 from input_text import *
 
 
@@ -15,28 +14,25 @@ def write_to_clean_file(filename, data_to_file):
 
 
 def prepare_user_data(message_data):
-    insert_script = ("INSERT INTO ns_user (name_column, date_column, time_column, "
-                     "message_column, station_name, mod_email, "
-                     "mod_date, mod_time, bool_approved) "
-                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)")
+    insert_script = ("INSERT INTO message (name_user, date_message, time_message, "
+                     "message, station_city, mod_email, mod_name "
+                     ",mod_date, mod_time, bool_approved) "
+                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
-    # The values that will be written to its respectable columns
+    # The data to write to the DB
     insert_values = (*message_data.values(),)
     return insert_script, insert_values
 
 
-def initialize_data(cursor, mod_email, line):
+def initialize_data(cursor, line, mod_data):
     current_time, current_date = get_time_date()
     name_user, message, date_message, time_message, station = line.strip().split(", ")
+    mod_name, mod_email = mod_data
 
     user_input = input(f"Is this text by {name_user} valid: {message}: ")
     # if moderator agrees that the text is valid it will be writen into the database
     if is_input_yes(user_input):
         bool_approved = 1
-
-        # if the random station is already in the DB it will not write it to it
-        if not is_station_in_db(cursor, station):
-            cursor.execute("INSERT INTO station (station_name) VALUES (%s)", (station,))
 
         message_data = {
             'name_user': name_user,
@@ -45,6 +41,7 @@ def initialize_data(cursor, mod_email, line):
             'message': message,
             'station': station,
             'mod_email': mod_email,
+            'mod_name': mod_name,
             'current_date': current_date,
             'current_time': current_time,
             'bool_approved': bool_approved
@@ -57,7 +54,7 @@ def initialize_data(cursor, mod_email, line):
     return False, user_input
 
 
-def write_data(connection, cursor, filename, mod_email):
+def write_data(connection, cursor, filename, mod_data):
     # puts all lines from the csv file into a list
     with open(filename) as csv_file:
         all_messages = [line.strip() for line in csv_file.readlines()]
@@ -68,7 +65,7 @@ def write_data(connection, cursor, filename, mod_email):
     # when a list is moderated lines_index will increase by 1
     while lines_index < len_messages:
         line = all_messages[lines_index]
-        bool_approved, user_input = initialize_data(cursor, mod_email, line)
+        bool_approved, user_input = initialize_data(cursor, line, mod_data)
 
         # commits to DB if message = valid
         if bool_approved:
@@ -86,15 +83,15 @@ def write_data(connection, cursor, filename, mod_email):
         lines_index += 1
 
 
-def send_data(filename):
+def send_data(filename, mod_data):
     if file_not_empty():
-        email = input("before moderating could enter your email: ")
         with connect_to_db() as connection, connection.cursor() as cursor:
-            write_data(connection, cursor, filename, email)
+            write_data(connection, cursor, filename, mod_data)
     else:
         print("There no more messages to moderate")
 
 
 if __name__ == "__main__":
     file_messages = "text.csv"
-    send_data(file_messages)
+    mod_info = input("mod name: "), input("mod email: ")
+    send_data(file_messages, mod_info)

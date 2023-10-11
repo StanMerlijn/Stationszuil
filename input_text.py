@@ -5,12 +5,12 @@ from datetime import datetime
 
 def connect_to_db():
     # connecting to the database. local
-    DB_password = input("DB password: ")
+    db_password = input("DB password: ")
     connection = psycopg2.connect(
         host="localhost",
         database="NS messages",
         user="postgres",
-        password=DB_password
+        password=db_password
     )
     return connection
 
@@ -63,7 +63,7 @@ def write_data_to_file(output_file):
     while True:
         is_valid, message_data = collect_user_input()
         if is_valid:
-            name, date_now, time_now, message, random_station, bool_approved = message_data
+            name, date_now, time_now, message, random_station = message_data
             if len(message) >= 140:
                 print("your message should be less than 140 characters")
             else:
@@ -81,7 +81,7 @@ def write_data_to_db(cursor, message_data, connection):
 
 def main():
     file_messages = "text.csv"
-    where_to_write = int(input("do oy want to write to the DB(if not it will write to file): "))
+    where_to_write = int(input("Write to DB else it will be file: "))
     if where_to_write == 1:
         with connect_to_db() as connection, connection.cursor() as cursor:
             while True:
