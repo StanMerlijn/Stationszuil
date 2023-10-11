@@ -1,26 +1,23 @@
+from input_text import connect_to_db
 import psycopg2
 
-conn = psycopg2.connect(
-    host="localhost",
-    database="test data",
-    user="postgres",
-    password="Whynow3421!"
-)
 
-curser = conn.cursor()
-
-with open("stations.txt", "r") as file:
-    for lines in file:
-        words = lines.strip()
-        curser.execute("INSERT INTO places (place_name) VALUES (%s)", (words,))
-    conn.commit()
-curser.close()
-conn.close()
+def get_stations(filename):
+    with open(filename) as stations_file:
+        stations = [station.strip() for station in stations_file.readlines()]
+    return stations
 
 
-cursers = conn.cursor()
-cursers.execute("SELECT COUNT(*) FROM station;")
-row_count = cursers.fetchone()[0]
-cursers.close()
-conn.close()
-print(row_count)
+def write_station(cursor, station):
+    cursor.execute("INSERT INTO station (station_name) VALUES (%s)", (station, ))
+
+
+def main(filename):
+    with connect_to_db() as connection, connection.cursor() as cursor:
+        for station in get_stations(filename):
+            write_station(cursor, station)
+
+
+if __name__ == "__main__":
+    file_stations = "stations.txt"
+    main(file_stations)
