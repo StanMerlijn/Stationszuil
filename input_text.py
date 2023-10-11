@@ -5,26 +5,14 @@ from datetime import datetime
 
 def connect_to_db():
     # connecting to the database. local
+    DB_password = input("DB password: ")
     connection = psycopg2.connect(
         host="localhost",
         database="NS messages",
         user="postgres",
-        password="Whynow3421!"
+        password=DB_password
     )
     return connection
-
-
-def is_station_in_db(cursor, station_name):
-    """"boolean function to check if a station is already in the database"""
-    cursor.execute("SELECT COUNT(*) FROM station WHERE station_name = %s", (station_name,))
-    data = cursor.fetchone()[0]
-    return data > 0
-
-
-def add_station_if_not_found(cursor, message_data):
-    random_station = message_data[4]
-    if not is_station_in_db(cursor, random_station):
-        cursor.execute("INSERT INTO station (station_name) VALUES (%s)", (random_station,))
 
 
 def clear_file(filename):
@@ -99,7 +87,6 @@ def main():
             while True:
                 is_valid, message_data = collect_user_input()
                 if is_valid:
-                    add_station_if_not_found(cursor, message_data)
                     write_data_to_db(cursor, message_data, connection)
                 else:
                     break

@@ -73,14 +73,12 @@ def write_data(connection, cursor, filename, mod_email):
         # commits to DB if message = valid
         if bool_approved:
             connection.commit()
-
         # clears file if all messages are moderated
-        if (lines_index + 1) == len_messages:
+        elif (lines_index + 1) == len_messages:
             print("There no more messages to moderate")
             clear_file(filename)
-
         # if user inputs exit when asked if text valid it will return every message back to file
-        if user_input.lower() == "exit":
+        elif user_input.lower() == "exit":
             data_back_to_file = all_messages[lines_index:]
             write_to_clean_file(filename, data_back_to_file)
             break
