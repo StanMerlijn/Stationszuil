@@ -3,9 +3,12 @@ import psycopg2
 from datetime import datetime
 
 
+# Function to connect to the databasa
 def connect_to_db():
-    # connecting to the database. local
+    # Prompting for the database password
     db_password = input("DB password: ")
+
+    # Establishing a connection to the PostgreSQL database
     connection = psycopg2.connect(
         host="localhost",
         database="NS messages",
@@ -15,16 +18,19 @@ def connect_to_db():
     return connection
 
 
+# Function to clear a file
 def clear_file(filename):
     with open(filename, "w") as file:
         file.truncate()
 
 
+# Function to check if input corresponds to 'yes'
 def is_input_yes(input_text):
     yes_bool = ["yes", "y", "ye"]
     return input_text.lower() in yes_bool
 
 
+# Function to get the current time and date
 def get_time_date():
     """this function gets the formatted time and date"""
     date = datetime.now().date()
@@ -32,17 +38,19 @@ def get_time_date():
     return time, date
 
 
+# Function to prepare the message data for insertion into the database
 def prepare_message_data():
-    # data to insert into DB
     insert_script = ("INSERT INTO message_send (name_user, date_message, time_message, "
                      "message, station_name)"
                      "VALUES (%s, %s, %s, %s, %s)")
     return insert_script
 
 
+# Function to collect user input for writing messages
 def collect_user_input():
     time_now, date_now = get_time_date()
     print("-" * 50)
+
     if is_input_yes(input(f"do you want to write a message (yes or no): ")):
 
         if is_input_yes(input("Do you want to use your name (yes or no): ")):
@@ -51,7 +59,8 @@ def collect_user_input():
             name = "anonymous"
         with open("stations.txt") as file:
             stations = [line.strip() for line in file]
-        random_station = random.choice(stations)  # chooses a random station from file
+        # chooses a random station from file
+        random_station = random.choice(stations)
         message = input("write your message here: ")
 
         message_data = name, date_now, time_now, message, random_station
@@ -59,6 +68,7 @@ def collect_user_input():
     return False, None
 
 
+# Function to write message data to a file
 def write_data_to_file(output_file):
     while True:
         is_valid, message_data = collect_user_input()
@@ -73,12 +83,14 @@ def write_data_to_file(output_file):
             break
 
 
+# Function to write message data to the database
 def write_data_to_db(cursor, message_data, connection):
     insert_script = prepare_message_data()
     cursor.execute(insert_script, message_data)
     connection.commit()
 
 
+# Main function
 def main(filename):
     where_to_write = int(input("Write to DB else it will be file: "))
     if where_to_write == 1:
