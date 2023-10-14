@@ -47,14 +47,15 @@ canvas.create_text(140.0, 214.0, anchor="nw", text="name\n", fill="#003082", fon
 
 button_image_1 = PhotoImage(
     file=relative_to_assets("button_1.png"))
-button_1 = Button(
+button_exit = Button(
     image=button_image_1,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_1 clicked"),
+    command=lambda: window.destroy(),
     relief="flat"
 )
-button_1.place(x=679.0, y=475.0, width=60.0, height=33.0)
+
+button_exit.place(x=679.0, y=475.0, width=60.0, height=33.0)
 
 button_image_2 = PhotoImage(
     file=relative_to_assets("button_2.png"))
@@ -141,10 +142,10 @@ entry_bg_2 = canvas.create_image(
 entry_2 = Entry(bd=0, bg="#F0F0F2", fg="#000716", highlightthickness=0)
 entry_2.place(x=199.60000002384186, y=252.0, width=198.6000030040741, height=23.0)
 
-button_1_image = PhotoImage(file=relative_to_assets("button_4.png"))
+button_8_image = PhotoImage(file=relative_to_assets("button_4.png"))
 
 # Create a Label to simulate the button
-button_label = tk.Label(window, image=button_1_image)
+button_label = tk.Label(window, image=button_8_image)
 button_label.bind("<Button-1>", button_click)
 
 button_label.place(x=866.0, y=10.0, width=39.0, height=13.0)
