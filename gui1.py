@@ -12,6 +12,7 @@ import tkinter as tk
 import ttkbootstrap as ttk
 from input_text import *
 import time
+import json
 
 
 OUTPUT_PATH = Path(__file__).parent
@@ -23,8 +24,12 @@ def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH_PC / Path(path)
 
 
-def button_click(event):
-    print("Button clicked")
+def button_transl():
+    lang_value = lang_var.get()  # Retrieve the value of the StringVar
+    if lang_value == "en":
+        lang_var.set("nl")
+    else:
+        lang_var.set("en")
 
 
 def get_name():
@@ -52,14 +57,14 @@ def get_data():
 
     # displays message if no name is given.
     if name == "":
-        canvas.itemconfig(name_error, text="One of the above must be checked /filled in!")
+        canvas.itemconfig(name_error, text=lang_dict[lang_var.get()]["name_error"])
 
     # displays message if entry message is empty.
     if entered_text == "\n":
-        canvas.itemconfig(message_error, text="Message cannot be empty!")
+        canvas.itemconfig(message_error, text=lang_dict[lang_var.get()]["message_error"])
 
     if message_len > 140:
-        canvas.itemconfig(message_error, text="message has to be less than 140 characters!")
+        canvas.itemconfig(message_error, text=lang_dict[lang_var.get()]["message_len"])
         return empty_return
 
     # if the data fields are not empty it will return them.
@@ -88,9 +93,10 @@ def display_date():
     date_var.set(time.strftime("%B %d", time.localtime()))
     window.after(1000*60*60, display_date)
 
+
 def display_clock():
     time_var.set(time.strftime("%H:%M", time.localtime()))
-    window.after(60000, display_clock)
+    window.after(10000, display_clock)
 
 
 window = Tk()
@@ -101,6 +107,9 @@ window.title("NS message")
 conn = connect_to_db()
 cursor = conn.cursor()
 
+with open('language.json', 'r') as file:
+    lang_dict = json.load(file)
+lang_var = tk.StringVar(value="en")
 
 canvas = Canvas(window, bg="#E6E6E9", height=540, width=960, bd=0,
                 highlightthickness=0, relief="ridge")
@@ -114,13 +123,26 @@ canvas.create_rectangle(0.0, 41.0, 960.0, 171.0, fill="#FFC917", outline="")
 
 canvas.create_rectangle(55.0, 131.0, 905.0, 540.0, fill="#FFFFFF", outline="")
 
-canvas.create_text(125.0, 310.199951171875, anchor="nw", text="message\n",
-                   fill="#003082", font=("Open Sans", 11 * -1))
+canvas.create_text(
+    125.0,
+    310.199951171875,
+    anchor="nw",
+    text=lang_dict[lang_var.get()]["message"],
+    fill="#003082",
+    font=("Open Sans", 11 * -1)
+)
 
-canvas.create_text(140.0, 214.0, anchor="nw", text="name\n", fill="#003082", font=("Open Sans", 11 * -1))
+canvas.create_text(
+    140.0,
+    214.0,
+    anchor="nw",
+    text=lang_dict[lang_var.get()]["name"],
+    fill="#003082",
+    font=("Open Sans", 11 * -1)
+)
 
 button_image_1 = PhotoImage(
-    file=relative_to_assets("button_1.png"))
+    file=relative_to_assets(lang_dict[lang_var.get()]["button_1"]))
 button_exit = Button(
     image=button_image_1,
     borderwidth=0,
@@ -132,7 +154,7 @@ button_exit = Button(
 button_exit.place(x=679.0, y=475.0, width=60.0, height=33.0)
 
 button_image_2 = PhotoImage(
-    file=relative_to_assets("button_2.png"))
+    file=relative_to_assets(lang_dict[lang_var.get()]["button_2"]))
 button_send = Button(
     image=button_image_2,
     borderwidth=0,
@@ -151,11 +173,6 @@ image_1 = canvas.create_image(
     22.0,
     image=image_image_1
 )
-
-canvas.create_rectangle(863.0, 28.20001220703125, 905.0, 31.20001220703125, fill="#FFC917", outline="")
-
-# canvas.create_text(227.0, 154.0, anchor="nw", text="today, mon 10",
-#                    fill="#003082", font=("OpenSansRoman SemiBold", 11 * -1), )
 
 date_var = tk.StringVar()
 label_date = ttk.Label(canvas,
@@ -176,11 +193,22 @@ name_var = tk.IntVar(value=0)
 button_name = ttk.Checkbutton(canvas, command=get_name, variable=name_var, offvalue=0, onvalue=1)
 button_name.place(x=199.0, y=214.0, width=17.0, height=16.32000732421875)
 
-canvas.create_text(233.0, 215.0, anchor="nw", text="anonymous",
-                   fill="#000000", font=("OpenSansRoman Regular", 11 * -1))
-
-canvas.create_text(55.0, 66.0, anchor="nw", text="write your message",
-                   fill="#003082", font=("OpenSansRoman SemiBold", 20 * -1))
+canvas.create_text(
+    233.0,
+    215.0,
+    anchor="nw",
+    text=lang_dict[lang_var.get()]["anonymous"],
+    fill="#000000",
+    font=("OpenSansRoman Regular", 11 * -1)
+)
+canvas.create_text(
+    55.0,
+    66.0,
+    anchor="nw",
+    text=lang_dict[lang_var.get()]["header"],
+    fill="#003082",
+    font=("OpenSansRoman SemiBold", 20 * -1)
+)
 
 image_image_2 = PhotoImage(
     file=relative_to_assets("image_2.png"))
@@ -198,8 +226,14 @@ image_3 = canvas.create_image(
     image=image_image_3
 )
 
-canvas.create_text(443.0, 15.0, anchor="nw", text="welkom to NS",
-                   fill="#003082", font=("OpenSansRoman SemiBold", 11 * -1))
+canvas.create_text(
+    443.0,
+    15.0,
+    anchor="nw",
+    text=lang_dict[lang_var.get()]["welcome"],
+    fill="#003082",
+    font=("OpenSansRoman SemiBold", 11 * -1)
+)
 
 entry_image_1 = PhotoImage(
     file=relative_to_assets("entry_1.png"))
@@ -227,29 +261,43 @@ user_name = tk.StringVar()
 entry_name = ttk.Entry(canvas, textvariable=user_name, style="Disabled.TEntry")
 entry_name.place(x=199.60000002384186, y=252.0, width=198.6000030040741, height=25.0)
 
+name_error = canvas.create_text(
+    199.0,
+    285.0,
+    anchor="nw",
+    text="",
+    fill="#DB0029",
+    font=("OpenSansRoman Light", 9 * -1)
+)
 
-button_8_image = PhotoImage(file=relative_to_assets("button_4.png"))
-
-name_error = canvas.create_text(199.0,
-                                285.0,
-                                anchor="nw",
-                                text="",
-                                fill="#DB0029",
-                                font=("OpenSansRoman Light", 9 * -1))
-
-message_error = canvas.create_text(199.0,
-                                   458.0,
-                                   anchor="nw",
-                                   text="",
-                                   fill="#DB0029",
-                                   font=("OpenSansRoman Light", 9 * -1),
-                                   state="disabled")
+message_error = canvas.create_text(
+    199.0,
+    458.0,
+    anchor="nw",
+    text="",
+    fill="#DB0029",
+    font=("OpenSansRoman Light", 9 * -1),
+    state="disabled"
+)
 
 # Create a Label to simulate the button
-button_label = (tk.Label(window, image=button_8_image))
-button_label.bind("<Button-1>", button_click)
+# button_4 = PhotoImage(file=relative_to_assets(lang_dict[lang_var]["button_4"]))
+canvas.create_rectangle(863.0, 28.20001220703125, 905.0, 31.20001220703125, fill="#FFC917", outline="")
 
-button_label.place(x=866.0, y=10.0, width=39.0, height=13.0)
+# button_translate = (tk.Label(window, image=button_4))
+# button_translate.bind("<Button-1>", button_transl)
+# button_translate.place(x=864.5, y=10.0, width=39.0, height=13.0)
+
+button_4 = PhotoImage(file=relative_to_assets(lang_dict[lang_var.get()]["button_4"]))
+button_send = Button(
+    image=button_4,
+    borderwidth=0,
+    highlightthickness=0,
+    command=button_transl,
+    relief="flat",
+    textvariable=lang_var
+)
+button_send.place(x=864.5, y=10.0, width=39.0, height=13.0)
 
 display_date()
 display_clock()
