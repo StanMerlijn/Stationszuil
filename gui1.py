@@ -84,13 +84,13 @@ def connection_close():
     window.destroy()
 
 
-def get_current_time():
-    current_time = time.strftime("%H:%M:%S", time.localtime())
-    return current_time
-
+def display_date():
+    date_var.set(time.strftime("%B %d", time.localtime()))
+    window.after(1000*60*60, display_date)
 
 def display_clock():
-    time_var.set(time.strftime("%H:%M:%S", time.localtime()))
+    time_var.set(time.strftime("%H:%M", time.localtime()))
+    window.after(60000, display_clock)
 
 
 window = Tk()
@@ -105,7 +105,7 @@ cursor = conn.cursor()
 canvas = Canvas(window, bg="#E6E6E9", height=540, width=960, bd=0,
                 highlightthickness=0, relief="ridge")
 
-canvas.create_rectangle(0.0, 0.0, 960, 540, fill="#E6E6E9")
+canvas.create_rectangle(-1, 0.0, 960, 600, fill="#E6E6E9")
 
 canvas.place(x=0, y=0)
 canvas.create_rectangle(1158.0, 61.0, 1179.0, 70.0, fill="#000000", outline="")
@@ -154,13 +154,22 @@ image_1 = canvas.create_image(
 
 canvas.create_rectangle(863.0, 28.20001220703125, 905.0, 31.20001220703125, fill="#FFC917", outline="")
 
+# canvas.create_text(227.0, 154.0, anchor="nw", text="today, mon 10",
+#                    fill="#003082", font=("OpenSansRoman SemiBold", 11 * -1), )
 
-canvas.create_text(227.0, 154.0, anchor="nw", text="today, mon 10",
-                   fill="#003082", font=("OpenSansRoman SemiBold", 11 * -1), )
+date_var = tk.StringVar()
+label_date = ttk.Label(canvas,
+                       textvariable=date_var,
+                       foreground="#003082",
+                       font=("OpenSansRoman SemiBold", 10))
+label_date.place(x=227.0, y=151)
 
-time_var = tk.StringVar
-canvas.create_text(365.0, 153.0, anchor="nw", text="10:40",
-                   fill="#003082", font=("OpenSansRoman SemiBold", 11 * -1))
+time_var = tk.StringVar()
+label_time = ttk.Label(canvas,
+                       textvariable=time_var,
+                       foreground="#003082",
+                       font=("OpenSansRoman SemiBold", 10))
+label_time.place(x=365.0, y=151)
 
 
 name_var = tk.IntVar(value=0)
@@ -242,5 +251,7 @@ button_label.bind("<Button-1>", button_click)
 
 button_label.place(x=866.0, y=10.0, width=39.0, height=13.0)
 
+display_date()
+display_clock()
 window.resizable(False, False)
 window.mainloop()
