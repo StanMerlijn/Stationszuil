@@ -10,6 +10,7 @@ from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 import tkinter as tk
 import ttkbootstrap as ttk
+from input_text import main_gui
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"/Users/stanmerlijn/PycharmProjects/pythonProject4/assets/frame0")
@@ -39,23 +40,38 @@ def get_name():
 def get_data():
     entered_text = entry_message.get("1.0", tk.END)
     name = get_name()
+    message_len = len(entered_text.replace("\n", ""))
 
+    canvas.itemconfig(message_error, text="")
+    canvas.itemconfig(name_error, text="")
+
+    empty_return = False, None, None
+
+    # displays message if no name is given.
     if name == "":
         canvas.itemconfig(name_error, text="One of the above must be checked /filled in!")
-    else:
-        canvas.itemconfig(name_error, text="")
 
+    # displays message if entry message is empty.
     if entered_text == "\n":
         canvas.itemconfig(message_error, text="Message cannot be empty!")
-    else:
-        canvas.itemconfig(message_error, text="")
 
-    if not name == "" and not entered_text == "\n":
-        return name, entered_text
+    if message_len > 140:
+        canvas.itemconfig(message_error, text="message has to be less than 140 characters!")
+        return empty_return
+
+    # if the data fields are not empty it will return them.
+    if entered_text == "\n" or name == "":
+        return empty_return
+
+    return True, name, entered_text
 
 
 def send_data():
-    get_data()
+    bool_data, name, message = get_data()
+    if bool_data:
+        main_gui(name, message)
+        entry_name.delete(0, tk.END)
+        entry_message.delete("1.0", tk.END)
 
 
 window = Tk()
