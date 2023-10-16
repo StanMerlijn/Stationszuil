@@ -10,8 +10,8 @@ def connect_to_db():
 
     # Establishing a connection to the PostgreSQL database
     connection = psycopg2.connect(
-        host="localhost",
-        database="NS messages",
+        host="20.68.149.147",
+        database="NS_messages",
         user="postgres",
         password=db_password
     )
@@ -113,6 +113,8 @@ def main_gui(cursor, connection, name, message):
     row_data = cursor.fetchall()
     stations = [row[0] for row in row_data]
     random_station = random.choice(stations)
+
+    # data to insert into DB
     message_data = name, date_now, time_now, message, random_station
     write_data_to_db(cursor, message_data, connection)
 
