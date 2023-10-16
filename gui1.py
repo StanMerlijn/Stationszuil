@@ -12,7 +12,7 @@ import tkinter as tk
 import ttkbootstrap as ttk
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"/Users/stanmerlijn/PycharmProjects/pythonProject4/build/assets/frame0")
+ASSETS_PATH = OUTPUT_PATH / Path(r"/Users/stanmerlijn/PycharmProjects/pythonProject4/assets/frame0")
 
 
 def relative_to_assets(path: str) -> Path:
@@ -21,6 +21,35 @@ def relative_to_assets(path: str) -> Path:
 
 def button_click(event):
     print("Button clicked")
+
+
+def name_state():
+    # entry_name.delete(0, tk.END)
+    if name_var.get() == 1:
+        entry_name.configure(foreground="grey")
+        entry_name["state"] = "disabled"
+        return False
+    else:
+        entry_name["state"] = "normal"
+        entry_name.configure(foreground="#000716")
+        return True
+
+
+def get_name():
+    if name_state():
+        name = user_name.get()
+        return name
+    else:
+        name = "anonymous"
+        return name
+
+
+print(get_name())
+
+
+def send_data():
+    name_variable = name_var.get()
+    entered_text = entry_message.get("1.0", tk.END)
 
 
 window = Tk()
@@ -86,16 +115,9 @@ canvas.create_text(227.0, 154.0, anchor="nw", text="today, mon 10",
 canvas.create_text(365.0, 153.0, anchor="nw", text="10:40",
                    fill="#003082", font=("OpenSansRoman SemiBold", 11 * -1))
 
-button_image_3 = PhotoImage(
-    file=relative_to_assets("button_3.png"))
-button_3 = Button(
-    image=button_image_3,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: print("button_3 clicked"),
-    relief="flat"
-)
-button_3.place(x=199.0, y=214.0, width=17.0, height=16.32000732421875)
+name_var = tk.IntVar(value=0)
+button_name = ttk.Checkbutton(canvas, command=name_info, variable=name_var)
+button_name.place(x=199.0, y=214.0, width=17.0, height=16.32000732421875)
 
 canvas.create_text(233.0, 215.0, anchor="nw", text="anonymous",
     fill="#000000", font=("OpenSansRoman Regular", 11 * -1))
@@ -127,22 +149,47 @@ entry_image_1 = PhotoImage(
 entry_bg_1 = canvas.create_image(
     469.0,
     380.5000305175781,
-    image=entry_image_1
-)
-entry_1 = Text(bd=0, bg="#F0F0F2", fg="#000716", highlightthickness=0)
-entry_1.place(x=199.60000002384186, y=310.0000305175781, width=538.7999999523163, height=139.0)
+    image=entry_image_1)
 
-entry_image_2 = PhotoImage(
+
+entry_message = Text(bd=0, bg="#F0F0F2", fg="#000716", highlightthickness=0, )
+entry_message.place(x=199.60000002384186, y=310.0000305175781, width=538.7999999523163, height=139.0)
+
+entry_image_name = PhotoImage(
     file=relative_to_assets("entry_2.png"))
-entry_bg_2 = canvas.create_image(
+entry_bg_name = canvas.create_image(
     298.9000015258789,
     264.5,
-    image=entry_image_2
+    image=entry_image_name
 )
-entry_2 = Entry(bd=0, bg="#F0F0F2", fg="#000716", highlightthickness=0)
-entry_2.place(x=199.60000002384186, y=252.0, width=198.6000030040741, height=23.0)
+
+style = ttk.Style()
+style.configure("Disabled.TEntry", foreground="#000716", background="#F0F0F2")
+
+user_name = tk.StringVar()
+entry_name = ttk.Entry(canvas, textvariable=user_name, style="Disabled.TEntry")
+entry_name.place(x=199.60000002384186, y=252.0, width=198.6000030040741, height=25.0)
 
 button_8_image = PhotoImage(file=relative_to_assets("button_4.png"))
+
+name_error_text = "One of the above must be checked /filled in!"
+name_error = canvas.create_text(199.0,
+                                285.0,
+                                anchor="nw",
+                                text="",
+                                fill="#DB0029",
+                                font=("OpenSansRoman Light", 9 * -1))
+
+message_error_text = "Message cannot be empty!"
+message_error = canvas.create_text(199.0,
+                                   458.0,
+                                   anchor="nw",
+                                   text="",
+                                   fill="#DB0029",
+                                   font=("OpenSansRoman Light", 9 * -1),
+                                   state="disabled")
+
+canvas.itemconfig(message_error, text="for function?????")
 
 # Create a Label to simulate the button
 button_label = tk.Label(window, image=button_8_image)
