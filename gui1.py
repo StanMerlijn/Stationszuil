@@ -7,18 +7,20 @@ from pathlib import Path
 
 # from tkinter import *
 # Explicit imports to satisfy Flake8
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
+from tkinter import Tk, Canvas, Text, Button, PhotoImage
 import tkinter as tk
 import ttkbootstrap as ttk
-from input_text import main_gui, connect_to_db, get_time_date
+from input_text import *
 import time
 
+
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"/Users/stanmerlijn/PycharmProjects/pythonProject4/assets/frame0")
+ASSETS_PATH_LP = OUTPUT_PATH / Path(r"/Users/stanmerlijn/PycharmProjects/pythonProject4/assets/frame0")
+ASSETS_PATH_PC = OUTPUT_PATH / Path(r"C:\Users\smerl\PycharmProjects\StationsZuil\assets\frame0 ")
 
 
 def relative_to_assets(path: str) -> Path:
-    return ASSETS_PATH / Path(path)
+    return ASSETS_PATH_PC / Path(path)
 
 
 def button_click(event):
@@ -81,30 +83,20 @@ def connection_close():
     conn.close()
     window.destroy()
 
+
 def get_current_time():
-    current_time = time.strftime("%H:%M", time.localtime())
+    current_time = time.strftime("%H:%M:%S", time.localtime())
     return current_time
 
 
 def display_clock():
-
-    while True:
-        yield get_current_time()
-        time.sleep(1)
+    time_var.set(time.strftime("%H:%M:%S", time.localtime()))
 
 
-def time():
-    time_int = display_clock()
-    for current_time in time_int:
-        print(current_time)
-
-
-time()
 window = Tk()
 
 window.geometry("960x540")
 window.title("NS message")
-window.configure(bg="#E6E6E9")
 
 conn = connect_to_db()
 cursor = conn.cursor()
@@ -112,6 +104,8 @@ cursor = conn.cursor()
 
 canvas = Canvas(window, bg="#E6E6E9", height=540, width=960, bd=0,
                 highlightthickness=0, relief="ridge")
+
+canvas.create_rectangle(0.0, 0.0, 960, 540, fill="#E6E6E9")
 
 canvas.place(x=0, y=0)
 canvas.create_rectangle(1158.0, 61.0, 1179.0, 70.0, fill="#000000", outline="")
@@ -160,11 +154,14 @@ image_1 = canvas.create_image(
 
 canvas.create_rectangle(863.0, 28.20001220703125, 905.0, 31.20001220703125, fill="#FFC917", outline="")
 
-canvas.create_text(227.0, 154.0, anchor="nw", text="today, mon 10",
-                   fill="#003082", font=("OpenSansRoman SemiBold", 11 * -1))
 
+canvas.create_text(227.0, 154.0, anchor="nw", text="today, mon 10",
+                   fill="#003082", font=("OpenSansRoman SemiBold", 11 * -1), )
+
+time_var = tk.StringVar
 canvas.create_text(365.0, 153.0, anchor="nw", text="10:40",
                    fill="#003082", font=("OpenSansRoman SemiBold", 11 * -1))
+
 
 name_var = tk.IntVar(value=0)
 button_name = ttk.Checkbutton(canvas, command=get_name, variable=name_var, offvalue=0, onvalue=1)
@@ -203,7 +200,7 @@ entry_bg_1 = canvas.create_image(
     image=entry_image_1)
 
 
-entry_message = Text(bd=0, bg="#F0F0F2", fg="#000716", highlightthickness=0, )
+entry_message = Text(bd=0, bg="#F0F0F2", fg="#000716", highlightthickness=0)
 entry_message.place(x=199.60000002384186, y=310.0000305175781, width=538.7999999523163, height=139.0)
 
 entry_image_name = PhotoImage(
@@ -240,7 +237,7 @@ message_error = canvas.create_text(199.0,
                                    state="disabled")
 
 # Create a Label to simulate the button
-button_label = tk.Label(window, image=button_8_image)
+button_label = (tk.Label(window, image=button_8_image))
 button_label.bind("<Button-1>", button_click)
 
 button_label.place(x=866.0, y=10.0, width=39.0, height=13.0)
