@@ -23,30 +23,39 @@ def button_click(event):
     print("Button clicked")
 
 
-def name_state():
+def get_name():
     # entry_name.delete(0, tk.END)
     if name_var.get() == 1:
         entry_name.configure(foreground="grey")
         entry_name["state"] = "disabled"
-        return False
+        return "anonymous"
     elif name_var.get() == 0:
         entry_name["state"] = "normal"
         entry_name.configure(foreground="#000716")
-        return True
+        return user_name.get()
 
 
-def get_name():
-    name = user_name.get()
-    if not name_state():
-        name = "anonymous"
-        return name
-    return name
+# this function gets the name and message. will display message if empty
+def get_data():
+    entered_text = entry_message.get("1.0", tk.END)
+    name = get_name()
+
+    if name == "":
+        canvas.itemconfig(name_error, text="One of the above must be checked /filled in!")
+    else:
+        canvas.itemconfig(name_error, text="")
+
+    if entered_text == "\n":
+        canvas.itemconfig(message_error, text="Message cannot be empty!")
+    else:
+        canvas.itemconfig(message_error, text="")
+
+    if not name == "" and not entered_text == "\n":
+        return name, entered_text
 
 
 def send_data():
-    name_variable = name_var.get()
-    entered_text = entry_message.get("1.0", tk.END)
-    name = get_name()
+    get_data()
 
 
 window = Tk()
@@ -89,7 +98,7 @@ button_send = Button(
     image=button_image_2,
     borderwidth=0,
     highlightthickness=0,
-    command=get_name,
+    command=send_data,
     relief="flat"
 )
 button_send.place(x=199.0, y=475.0, width=60.0, height=33.0)
@@ -113,7 +122,7 @@ canvas.create_text(365.0, 153.0, anchor="nw", text="10:40",
                    fill="#003082", font=("OpenSansRoman SemiBold", 11 * -1))
 
 name_var = tk.IntVar(value=0)
-button_name = ttk.Checkbutton(canvas, command=name_state, variable=name_var, offvalue=0, onvalue=1)
+button_name = ttk.Checkbutton(canvas, command=get_name, variable=name_var, offvalue=0, onvalue=1)
 button_name.place(x=199.0, y=214.0, width=17.0, height=16.32000732421875)
 
 canvas.create_text(233.0, 215.0, anchor="nw", text="anonymous",
@@ -170,7 +179,6 @@ entry_name.place(x=199.60000002384186, y=252.0, width=198.6000030040741, height=
 
 button_8_image = PhotoImage(file=relative_to_assets("button_4.png"))
 
-name_error_text = "One of the above must be checked /filled in!"
 name_error = canvas.create_text(199.0,
                                 285.0,
                                 anchor="nw",
@@ -178,7 +186,6 @@ name_error = canvas.create_text(199.0,
                                 fill="#DB0029",
                                 font=("OpenSansRoman Light", 9 * -1))
 
-message_error_text = "Message cannot be empty!"
 message_error = canvas.create_text(199.0,
                                    458.0,
                                    anchor="nw",
@@ -186,8 +193,6 @@ message_error = canvas.create_text(199.0,
                                    fill="#DB0029",
                                    font=("OpenSansRoman Light", 9 * -1),
                                    state="disabled")
-
-canvas.itemconfig(message_error, text="for function?????")
 
 # Create a Label to simulate the button
 button_label = tk.Label(window, image=button_8_image)
