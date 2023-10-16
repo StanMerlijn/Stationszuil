@@ -102,8 +102,15 @@ conn = connect_to_db()
 cursor = conn.cursor()
 
 
-canvas = Canvas(window, bg="#E6E6E9", height=540, width=960, bd=0,
-                highlightthickness=0, relief="ridge")
+canvas = Canvas(
+    window,
+    bg="#E6E6E9",
+    height=540,
+    width=960,
+    bd=0,
+    highlightthickness=0,
+    relief="ridge"
+)
 
 canvas.create_rectangle(-1, 0.0, 960, 600, fill="#E6E6E9")
 
@@ -114,8 +121,14 @@ canvas.create_rectangle(0.0, 41.0, 960.0, 171.0, fill="#FFC917", outline="")
 
 canvas.create_rectangle(55.0, 131.0, 905.0, 540.0, fill="#FFFFFF", outline="")
 
-canvas.create_text(125.0, 310.199951171875, anchor="nw", text="message\n",
-                   fill="#003082", font=("Open Sans", 11 * -1))
+canvas.create_text(
+    125.0,
+    310.199951171875,
+    anchor="nw",
+    text="message\n",
+    fill="#003082",
+    font=("Open Sans", 11 * -1)
+)
 
 canvas.create_text(140.0, 214.0, anchor="nw", text="name\n", fill="#003082", font=("Open Sans", 11 * -1))
 
@@ -158,17 +171,21 @@ canvas.create_rectangle(863.0, 28.20001220703125, 905.0, 31.20001220703125, fill
 #                    fill="#003082", font=("OpenSansRoman SemiBold", 11 * -1), )
 
 date_var = tk.StringVar()
-label_date = ttk.Label(canvas,
-                       textvariable=date_var,
-                       foreground="#003082",
-                       font=("OpenSansRoman SemiBold", 10))
+label_date = ttk.Label(
+    canvas,
+    textvariable=date_var,
+    foreground="#003082",
+    font=("OpenSansRoman SemiBold", 10)
+)
 label_date.place(x=227.0, y=151)
 
 time_var = tk.StringVar()
-label_time = ttk.Label(canvas,
-                       textvariable=time_var,
-                       foreground="#003082",
-                       font=("OpenSansRoman SemiBold", 10))
+label_time = ttk.Label(
+    canvas,
+    textvariable=time_var,
+    foreground="#003082",
+    font=("OpenSansRoman SemiBold", 10)
+)
 label_time.place(x=365.0, y=151)
 
 
@@ -176,11 +193,23 @@ name_var = tk.IntVar(value=0)
 button_name = ttk.Checkbutton(canvas, command=get_name, variable=name_var, offvalue=0, onvalue=1)
 button_name.place(x=199.0, y=214.0, width=17.0, height=16.32000732421875)
 
-canvas.create_text(233.0, 215.0, anchor="nw", text="anonymous",
-                   fill="#000000", font=("OpenSansRoman Regular", 11 * -1))
+canvas.create_text(
+    233.0,
+    215.0,
+    anchor="nw",
+    text="anonymous",
+    fill="#000000",
+    font=("OpenSansRoman Regular", 11 * -1)
+)
 
-canvas.create_text(55.0, 66.0, anchor="nw", text="write your message",
-                   fill="#003082", font=("OpenSansRoman SemiBold", 20 * -1))
+canvas.create_text(
+    55.0,
+    66.0,
+    anchor="nw",
+    text="write your message",
+    fill="#003082",
+    font=("OpenSansRoman SemiBold", 20 * -1)
+)
 
 image_image_2 = PhotoImage(
     file=relative_to_assets("image_2.png"))
@@ -198,15 +227,22 @@ image_3 = canvas.create_image(
     image=image_image_3
 )
 
-canvas.create_text(443.0, 15.0, anchor="nw", text="welkom to NS",
-                   fill="#003082", font=("OpenSansRoman SemiBold", 11 * -1))
+canvas.create_text(
+    443.0,
+    15.0,
+    anchor="nw",
+    text="welkom to NS",
+    fill="#003082",
+    font=("OpenSansRoman SemiBold", 11 * -1)
+)
 
 entry_image_1 = PhotoImage(
     file=relative_to_assets("entry_1.png"))
 entry_bg_1 = canvas.create_image(
     469.0,
     380.5000305175781,
-    image=entry_image_1)
+    image=entry_image_1
+)
 
 
 entry_message = Text(bd=0, bg="#F0F0F2", fg="#000716", highlightthickness=0)
@@ -230,20 +266,24 @@ entry_name.place(x=199.60000002384186, y=252.0, width=198.6000030040741, height=
 
 button_8_image = PhotoImage(file=relative_to_assets("button_4.png"))
 
-name_error = canvas.create_text(199.0,
-                                285.0,
-                                anchor="nw",
-                                text="",
-                                fill="#DB0029",
-                                font=("OpenSansRoman Light", 9 * -1))
+name_error = canvas.create_text(
+    199.0,
+    285.0,
+    anchor="nw",
+    text="",
+    fill="#DB0029",
+    font=("OpenSansRoman Light", 9 * -1)
+)
 
-message_error = canvas.create_text(199.0,
-                                   458.0,
-                                   anchor="nw",
-                                   text="",
-                                   fill="#DB0029",
-                                   font=("OpenSansRoman Light", 9 * -1),
-                                   state="disabled")
+message_error = canvas.create_text(
+    199.0,
+    458.0,
+    anchor="nw",
+    text="",
+    fill="#DB0029",
+    font=("OpenSansRoman Light", 9 * -1),
+    state="disabled"
+)
 
 # Create a Label to simulate the button
 button_label = (tk.Label(window, image=button_8_image))
