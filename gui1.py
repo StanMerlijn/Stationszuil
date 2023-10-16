@@ -10,7 +10,7 @@ from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 import tkinter as tk
 import ttkbootstrap as ttk
-from input_text import main_gui
+from input_text import main_gui, connect_to_db
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"/Users/stanmerlijn/PycharmProjects/pythonProject4/assets/frame0")
@@ -69,9 +69,16 @@ def get_data():
 def send_data():
     bool_data, name, message = get_data()
     if bool_data:
-        main_gui(name, message)
+        main_gui(cursor, conn, name, message)
         entry_name.delete(0, tk.END)
         entry_message.delete("1.0", tk.END)
+
+
+def connection_close():
+    # Close the cursor and the connection when the window is closed
+    cursor.close()
+    conn.close()
+    window.destroy()
 
 
 window = Tk()
@@ -79,6 +86,9 @@ window = Tk()
 window.geometry("960x540")
 window.title("NS message")
 window.configure(bg="#E6E6E9")
+
+conn = connect_to_db()
+cursor = conn.cursor()
 
 
 canvas = Canvas(window, bg="#E6E6E9", height=540, width=960, bd=0,
@@ -102,7 +112,7 @@ button_exit = Button(
     image=button_image_1,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: window.destroy(),
+    command=connection_close,
     relief="flat"
 )
 
@@ -142,10 +152,10 @@ button_name = ttk.Checkbutton(canvas, command=get_name, variable=name_var, offva
 button_name.place(x=199.0, y=214.0, width=17.0, height=16.32000732421875)
 
 canvas.create_text(233.0, 215.0, anchor="nw", text="anonymous",
-    fill="#000000", font=("OpenSansRoman Regular", 11 * -1))
+                   fill="#000000", font=("OpenSansRoman Regular", 11 * -1))
 
 canvas.create_text(55.0, 66.0, anchor="nw", text="write your message",
-    fill="#003082", font=("OpenSansRoman SemiBold", 20 * -1))
+                   fill="#003082", font=("OpenSansRoman SemiBold", 20 * -1))
 
 image_image_2 = PhotoImage(
     file=relative_to_assets("image_2.png"))
