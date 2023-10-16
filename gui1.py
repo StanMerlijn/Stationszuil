@@ -10,7 +10,8 @@ from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 import tkinter as tk
 import ttkbootstrap as ttk
-from input_text import main_gui, connect_to_db
+from input_text import main_gui, connect_to_db, get_time_date
+import time
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"/Users/stanmerlijn/PycharmProjects/pythonProject4/assets/frame0")
@@ -80,7 +81,25 @@ def connection_close():
     conn.close()
     window.destroy()
 
+def get_current_time():
+    current_time = time.strftime("%H:%M", time.localtime())
+    return current_time
 
+
+def display_clock():
+
+    while True:
+        yield get_current_time()
+        time.sleep(1)
+
+
+def time():
+    time_int = display_clock()
+    for current_time in time_int:
+        print(current_time)
+
+
+time()
 window = Tk()
 
 window.geometry("960x540")
