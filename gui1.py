@@ -29,27 +29,24 @@ def name_state():
         entry_name.configure(foreground="grey")
         entry_name["state"] = "disabled"
         return False
-    else:
+    elif name_var.get() == 0:
         entry_name["state"] = "normal"
         entry_name.configure(foreground="#000716")
         return True
 
 
 def get_name():
-    if name_state():
-        name = user_name.get()
-        return name
-    else:
+    name = user_name.get()
+    if not name_state():
         name = "anonymous"
         return name
-
-
-print(get_name())
+    return name
 
 
 def send_data():
     name_variable = name_var.get()
     entered_text = entry_message.get("1.0", tk.END)
+    name = get_name()
 
 
 window = Tk()
@@ -88,14 +85,14 @@ button_exit.place(x=679.0, y=475.0, width=60.0, height=33.0)
 
 button_image_2 = PhotoImage(
     file=relative_to_assets("button_2.png"))
-button_2 = Button(
+button_send = Button(
     image=button_image_2,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_2 clicked"),
+    command=get_name,
     relief="flat"
 )
-button_2.place(x=199.0, y=475.0, width=60.0, height=33.0)
+button_send.place(x=199.0, y=475.0, width=60.0, height=33.0)
 
 canvas.create_rectangle(0.0, 0.0, 960.0, 45.0, fill="#FFFFFF", outline="")
 
@@ -116,7 +113,7 @@ canvas.create_text(365.0, 153.0, anchor="nw", text="10:40",
                    fill="#003082", font=("OpenSansRoman SemiBold", 11 * -1))
 
 name_var = tk.IntVar(value=0)
-button_name = ttk.Checkbutton(canvas, command=name_info, variable=name_var)
+button_name = ttk.Checkbutton(canvas, command=name_state, variable=name_var, offvalue=0, onvalue=1)
 button_name.place(x=199.0, y=214.0, width=17.0, height=16.32000732421875)
 
 canvas.create_text(233.0, 215.0, anchor="nw", text="anonymous",
@@ -169,6 +166,7 @@ style.configure("Disabled.TEntry", foreground="#000716", background="#F0F0F2")
 user_name = tk.StringVar()
 entry_name = ttk.Entry(canvas, textvariable=user_name, style="Disabled.TEntry")
 entry_name.place(x=199.60000002384186, y=252.0, width=198.6000030040741, height=25.0)
+
 
 button_8_image = PhotoImage(file=relative_to_assets("button_4.png"))
 
