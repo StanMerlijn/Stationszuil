@@ -105,6 +105,21 @@ def main(filename):
         write_data_to_file(filename)
 
 
+def main_gui(name, message):
+    time_now, date_now = get_time_date()
+
+    # message_data = name, date_now, time_now, message, random_station
+    with connect_to_db() as connection, connection.cursor() as cursor:
+        cursor.execute("SElECT (station_city) FROM station_service")
+        row_data = cursor.fetchall()
+        stations = [row[0] for row in row_data]
+        random_station = random.choice(stations)
+
+        message_data = name, date_now, time_now, message, random_station
+        write_data_to_db(cursor, message_data, connection)
+
+
 if __name__ == "__main__":
     file_messages = "text.csv"
-    main(file_messages)
+    # main(file_messages)
+    main_gui("ass", "cheekcs")
