@@ -88,6 +88,7 @@ def display_date():
     date_var.set(time.strftime("%B %d", time.localtime()))
     window.after(1000*60*60, display_date)
 
+
 def display_clock():
     time_var.set(time.strftime("%H:%M", time.localtime()))
     window.after(60000, display_clock)
@@ -101,7 +102,6 @@ window.title("NS message")
 conn = connect_to_db()
 cursor = conn.cursor()
 
-
 canvas = Canvas(
     window,
     bg="#E6E6E9",
@@ -113,12 +113,10 @@ canvas = Canvas(
 )
 
 canvas.create_rectangle(-1, 0.0, 960, 600, fill="#E6E6E9")
-
 canvas.place(x=0, y=0)
+
 canvas.create_rectangle(1158.0, 61.0, 1179.0, 70.0, fill="#000000", outline="")
-
 canvas.create_rectangle(0.0, 41.0, 960.0, 171.0, fill="#FFC917", outline="")
-
 canvas.create_rectangle(55.0, 131.0, 905.0, 540.0, fill="#FFFFFF", outline="")
 
 canvas.create_text(
@@ -130,7 +128,14 @@ canvas.create_text(
     font=("Open Sans", 11 * -1)
 )
 
-canvas.create_text(140.0, 214.0, anchor="nw", text="name\n", fill="#003082", font=("Open Sans", 11 * -1))
+canvas.create_text(
+    140.0,
+    214.0,
+    anchor="nw",
+    text="name\n",
+    fill="#003082",
+    font=("Open Sans", 11 * -1)
+)
 
 button_image_1 = PhotoImage(
     file=relative_to_assets("button_1.png"))
@@ -141,7 +146,6 @@ button_exit = Button(
     command=connection_close,
     relief="flat"
 )
-
 button_exit.place(x=679.0, y=475.0, width=60.0, height=33.0)
 
 button_image_2 = PhotoImage(
@@ -165,17 +169,12 @@ image_1 = canvas.create_image(
     image=image_image_1
 )
 
-canvas.create_rectangle(863.0, 28.20001220703125, 905.0, 31.20001220703125, fill="#FFC917", outline="")
-
-# canvas.create_text(227.0, 154.0, anchor="nw", text="today, mon 10",
-#                    fill="#003082", font=("OpenSansRoman SemiBold", 11 * -1), )
-
 date_var = tk.StringVar()
 label_date = ttk.Label(
     canvas,
     textvariable=date_var,
     foreground="#003082",
-    font=("OpenSansRoman SemiBold", 10)
+    font=("OpenSansRoman SemiBold", 11 * -1)
 )
 label_date.place(x=227.0, y=151)
 
@@ -184,7 +183,7 @@ label_time = ttk.Label(
     canvas,
     textvariable=time_var,
     foreground="#003082",
-    font=("OpenSansRoman SemiBold", 10)
+    font=("OpenSansRoman SemiBold", 11 * -1)
 )
 label_time.place(x=365.0, y=151)
 
@@ -214,7 +213,7 @@ canvas.create_text(
 image_image_2 = PhotoImage(
     file=relative_to_assets("image_2.png"))
 image_2 = canvas.create_image(
-    209.0,
+    206.5,
     161.0,
     image=image_image_2
 )
@@ -231,9 +230,9 @@ canvas.create_text(
     443.0,
     15.0,
     anchor="nw",
-    text="welkom to NS",
+    text="welcome to NS",
     fill="#003082",
-    font=("OpenSansRoman SemiBold", 11 * -1)
+    font=("OpenSansRoman ExtraBold", 13 * -1)
 )
 
 entry_image_1 = PhotoImage(
@@ -284,12 +283,6 @@ message_error = canvas.create_text(
     font=("OpenSansRoman Light", 9 * -1),
     state="disabled"
 )
-
-# Create a Label to simulate the button
-button_label = (tk.Label(window, image=button_8_image))
-button_label.bind("<Button-1>", button_click)
-
-button_label.place(x=866.0, y=10.0, width=39.0, height=13.0)
 
 display_date()
 display_clock()
