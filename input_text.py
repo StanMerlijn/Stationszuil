@@ -31,6 +31,14 @@ def get_time_date():
     return time, date
 
 
+def get_random_station(cursor):
+    cursor.execute("SElECT (station_city) FROM station_service")
+    row_data = cursor.fetchall()
+    stations = [row[0] for row in row_data]
+    random_station = random.choice(stations)
+    return random_station
+
+
 # Function to prepare the message data for insertion into the database
 def prepare_message_data():
     insert_script = ("INSERT INTO message_send (name_user, date_message, time_message, "
@@ -47,16 +55,11 @@ def write_data_to_db(cursor, message_data, connection):
 
 
 def main_gui(cursor, connection, name, message):
+    # getting all data to insert into database
     time_now, date_now = get_time_date()
-
-    # message_data = name, date_now, time_now, message, random_station
-    cursor.execute("SElECT (station_city) FROM station_service")
-    row_data = cursor.fetchall()
-    stations = [row[0] for row in row_data]
-    random_station = random.choice(stations)
-
-    # data to insert into DB
+    random_station = get_random_station(cursor)
     message_data = name, date_now, time_now, message, random_station
+
     write_data_to_db(cursor, message_data, connection)
 
 
