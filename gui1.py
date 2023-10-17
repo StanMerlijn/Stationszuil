@@ -23,12 +23,8 @@ def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH_PC / Path(path)
 
 
-def button_click(event):
-    print("Button clicked")
-
-
+# this function returns the correct name of the user
 def get_name():
-    # entry_name.delete(0, tk.END)
     if name_var.get() == 1:
         entry_name.configure(foreground="grey")
         entry_name["state"] = "disabled"
@@ -39,7 +35,7 @@ def get_name():
         return user_name.get()
 
 
-# this function gets the name and message. will display message if empty
+# this function gets the name and message. will display message if one is empty
 def get_data():
     entered_text = entry_message.get("1.0", tk.END)
     name = get_name()
@@ -69,6 +65,7 @@ def get_data():
     return True, name, entered_text
 
 
+# this function sends the data to the database
 def send_data():
     bool_data, name, message = get_data()
     if bool_data:
@@ -84,14 +81,16 @@ def connection_close():
     window.destroy()
 
 
-def display_date():
-    date_var.set(time.strftime("%B %d", time.localtime()))
-    window.after(1000*60*60, display_date)
+# Function to display the date in a specific format and update it every hour
+def display_date(var, root, date_format, update_time):
+    var.set(time.strftime(date_format, time.localtime()))
+    root.after(update_time, display_date)
 
 
-def display_clock():
-    time_var.set(time.strftime("%H:%M", time.localtime()))
-    window.after(60000, display_clock)
+# Function to display the clock time in a specific format and update it every minute
+def display_clock(var, root, time_format, update_time):
+    var.set(time.strftime(time_format, time.localtime()))
+    root.after(update_time, display_clock)
 
 
 window = Tk()
@@ -284,7 +283,7 @@ message_error = canvas.create_text(
     state="disabled"
 )
 
-display_date()
-display_clock()
+display_date(date_var, window, "%B %d", 1000*60*60)
+display_clock(time_var, window, "%H:%M", 60000)
 window.resizable(False, False)
 window.mainloop()
