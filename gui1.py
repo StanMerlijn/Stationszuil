@@ -74,7 +74,9 @@ def send_data():
 
         # reset inputs to prepare for new message
         entry_name.configure(state="normal")
+        entry_name.configure(foreground="black")
         entry_name.delete(0, tk.END)
+
         entry_message.delete("1.0", tk.END)
         name_var.set(value=0)
 
