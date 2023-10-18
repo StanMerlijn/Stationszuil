@@ -69,11 +69,15 @@ def get_data():
 def send_data():
     bool_data, name, message = get_data()
     if bool_data:
+        # prepare and commit all data to database
         main_gui(cursor, name, message)
+
+        # reset inputs to prepare for new message
         entry_name.configure(state="normal")
         entry_name.delete(0, tk.END)
         entry_message.delete("1.0", tk.END)
         name_var.set(value=0)
+
     conn.commit()
 
 
