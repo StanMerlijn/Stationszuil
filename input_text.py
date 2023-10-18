@@ -1,4 +1,6 @@
 import random
+import time
+
 import psycopg2
 from datetime import datetime
 
@@ -50,6 +52,14 @@ def get_message_ids(cursor):
             message_ids.append(ids)
     return message_ids
 
+
+def create_new_id(ids):
+    while True:
+        new_id = generate_user_id()
+        if new_id not in ids:
+            return new_id
+
+
 # Function to get the current time and date
 def get_time_date():
     """this function gets the formatted time and date"""
@@ -68,8 +78,8 @@ def get_random_station(cursor):
 
 # Function to prepare the message data for insertion into the database
 def prepare_message_data():
-    insert_script = ("INSERT INTO message_send (message_id, name_user, date_message, time_message, "
-                     "message_column, station_name)"
+    insert_script = ("INSERT INTO message_send (name_user, date_message, time_message, "
+                     "message_column, station_name, message_id)"
                      "VALUES (%s, %s, %s, %s, %s, %s)")
     return insert_script
 
@@ -87,17 +97,12 @@ def main_gui(cursor, name, message):
 
     # creating new unique message id
     message_ids = get_message_ids(cursor)
-    while True:
-        ID = generate_user_id()
-        if ID not in message_ids:
-            message_id = ID
-            break
+    message_id = create_new_id(message_ids)
 
-    message_data = message_id, name, date_now, time_now, message, random_station
+    message_data = name, date_now, time_now, message, random_station, message_id
     write_data_to_db(cursor, message_data)
 
 
 if __name__ == "__main__":
     with connect_to_db() as conn, conn.cursor() as cur:
         print(get_message_ids(cur))
-
