@@ -69,11 +69,12 @@ def get_data():
 def send_data():
     bool_data, name, message = get_data()
     if bool_data:
-        main_gui(cursor, conn, name, message)
+        main_gui(cursor, name, message)
         entry_name.configure(state="normal")
         entry_name.delete(0, tk.END)
         entry_message.delete("1.0", tk.END)
         name_var.set(value=0)
+    conn.commit()
 
 
 def connection_close():
@@ -84,15 +85,15 @@ def connection_close():
 
 
 # Function to display the date in a specific format and update it every hour
-def display_date(var, root, date_format, update_time):
-    var.set(time.strftime(date_format, time.localtime()))
-    root.after(update_time, display_date)
+def display_date(var, root, format_date, time_int):
+    var.set(time.strftime(format_date, time.localtime()))
+    root.after(time_int, display_date, var, root, format_date, time_int)
 
 
 # Function to display the clock time in a specific format and update it every minute
-def display_clock(var, root, time_format, update_time):
-    var.set(time.strftime(time_format, time.localtime()))
-    root.after(update_time, display_clock)
+def display_clock(var, root, format_time, time_int):
+    var.set((time.strftime(format_time, time.localtime())))
+    root.after(time_int, display_clock, var, root, format_time, time_int)
 
 
 window = Tk()
@@ -286,6 +287,6 @@ message_error = canvas.create_text(
 )
 
 display_date(date_var, window, "%B %d", 1000*60*60)
-display_clock(time_var, window, "%H:%M", 60000)
+display_clock(time_var, window, "%H:%M", 1000)
 window.resizable(False, False)
 window.mainloop()
