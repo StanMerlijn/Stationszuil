@@ -35,6 +35,21 @@ def is_input_yes(input_text):
     return input_text.lower() in yes_bool
 
 
+# Function to generate a unique ID
+def generate_user_id():
+    return random.randint(1, 11)
+
+
+def get_message_ids(cursor):
+    cursor.execute("SELECT message_id FROM message_send")
+    data_ids = cursor.fetchall()
+    message_ids = []
+
+    for i in data_ids:
+        for ids in i:
+            message_ids.append(ids)
+    return message_ids
+
 # Function to get the current time and date
 def get_time_date():
     """this function gets the formatted time and date"""
@@ -53,30 +68,36 @@ def get_random_station(cursor):
 
 # Function to prepare the message data for insertion into the database
 def prepare_message_data():
-    insert_script = ("INSERT INTO message_send (name_user, date_message, time_message, "
-                     "message, station_name)"
-                     "VALUES (%s, %s, %s, %s, %s)")
+    insert_script = ("INSERT INTO message_send (message_id, name_user, date_message, time_message, "
+                     "message_column, station_name)"
+                     "VALUES (%s, %s, %s, %s, %s, %s)")
     return insert_script
 
 
 # Function to write message data to the database
-def write_data_to_db(cursor, message_data, connection):
+def write_data_to_db(cursor, message_data):
     insert_script = prepare_message_data()
     cursor.execute(insert_script, message_data)
-    connection.commit()
 
 
-def main_gui(cursor, connection, name, message):
+def main_gui(cursor, name, message):
     # getting all data to insert into database
     time_now, date_now = get_time_date()
     random_station = get_random_station(cursor)
-    message_data = name, date_now, time_now, message, random_station
 
-    write_data_to_db(cursor, message_data, connection)
+    # creating new unique message id
+    message_ids = get_message_ids(cursor)
+    while True:
+        ID = generate_user_id()
+        if ID not in message_ids:
+            message_id = ID
+            break
+
+    message_data = message_id, name, date_now, time_now, message, random_station
+    write_data_to_db(cursor, message_data)
 
 
 if __name__ == "__main__":
-    file_messages = "text.csv"
-    # main(file_messages)
-    # maingui()
+    with connect_to_db() as conn, conn.cursor() as cur:
+        print(get_message_ids(cur))
 
