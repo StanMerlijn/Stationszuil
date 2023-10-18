@@ -70,8 +70,10 @@ def send_data():
     bool_data, name, message = get_data()
     if bool_data:
         main_gui(cursor, conn, name, message)
+        entry_name.configure(state="normal")
         entry_name.delete(0, tk.END)
         entry_message.delete("1.0", tk.END)
+        name_var.set(value=0)
 
 
 def connection_close():
