@@ -23,6 +23,18 @@ def connect_to_db():
             print("Invalid password. Please try again.")
 
 
+# Function to clear a file
+def clear_file(filename):
+    with open(filename, "w") as file:
+        file.truncate()
+
+
+# Function to check if input corresponds to 'yes'
+def is_input_yes(input_text):
+    yes_bool = ["yes", "y", "ye"]
+    return input_text.lower() in yes_bool
+
+
 # Function to get the current time and date
 def get_time_date():
     """this function gets the formatted time and date"""
