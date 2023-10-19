@@ -22,7 +22,7 @@ def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH_LP / Path(path)
 
 
-def main(cursor, conn):
+def main(cur, con):
     # this function returns the correct name of the user
     def get_name():
         if name_var.get() == 1:
@@ -68,7 +68,7 @@ def main(cursor, conn):
         bool_data, name, message = get_data()
         if bool_data:
             # prepare and commit all data to database
-            main_gui(cursor, name, message)
+            main_gui(cur, name, message)
 
             # reset inputs to prepare for new message
             entry_name.configure(state="normal")
@@ -78,7 +78,7 @@ def main(cursor, conn):
             entry_message.delete("1.0", tk.END)
             name_var.set(value=0)
 
-        conn.commit()
+        con.commit()
 
     window = Tk()
 
@@ -226,7 +226,6 @@ def main(cursor, conn):
         image=entry_image_1
     )
 
-
     entry_message = Text(bd=0, bg="#F0F0F2", fg="#000716", highlightthickness=0)
     entry_message.place(x=199.60000002384186, y=310.0000305175781, width=538.7999999523163, height=139.0)
 
@@ -244,9 +243,6 @@ def main(cursor, conn):
     user_name = tk.StringVar()
     entry_name = ttk.Entry(canvas, textvariable=user_name, style="Disabled.TEntry")
     entry_name.place(x=199.60000002384186, y=252.0, width=198.6000030040741, height=25.0)
-
-
-    button_8_image = PhotoImage(file=relative_to_assets("button_4.png"))
 
     name_error = canvas.create_text(
         199.0,
