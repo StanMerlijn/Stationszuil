@@ -1,5 +1,5 @@
 import time
-from input_text import connect_to_db
+from proj.input_text import connect_to_db
 import timeit
 import sys
 

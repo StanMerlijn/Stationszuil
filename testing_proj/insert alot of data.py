@@ -1,7 +1,4 @@
-import random
-
-from input_text import *
-from moderator import *
+from proj.moderator import *
 import time
 
 
