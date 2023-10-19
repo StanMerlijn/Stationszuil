@@ -8,15 +8,16 @@ from pathlib import Path
 # from tkinter import *
 # Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
-from gui1 import *
+from input_text import *
 
 
 OUTPUT_PATH = Path(__file__).parent
+ASSETS_PATH_LP = OUTPUT_PATH / Path(r"/Users/stanmerlijn/PycharmProjects/pythonProject4/build/assets/frame1")
 ASSETS_PATH_PC = OUTPUT_PATH / Path(r"C:\Users\smerl\PycharmProjects\StationsZuil\proj\assets\frame1 ")
 
 
 def relative_to_assets(path: str) -> Path:
-    return ASSETS_PATH_PC / Path(path)
+    return ASSETS_PATH_LP / Path(path)
 
 
 def main(cursor, conn):
@@ -136,7 +137,7 @@ def main(cursor, conn):
         image=button_image_1,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: connection_close(cursor, conn, window),
+        command=lambda: window.destroy(),
         relief="flat"
     )
     button_exit.place(

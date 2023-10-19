@@ -35,7 +35,6 @@ def main(cursor, conn):
             entry_name.configure(foreground="#000716")
             return user_name.get()
 
-
     # this function gets the name and message. will display message if one is empty
     def get_data():
         entered_text = entry_message.get("1.0", tk.END)
@@ -65,7 +64,6 @@ def main(cursor, conn):
 
         return True, name, entered_text
 
-
     # this function sends the data to the database
     def send_data():
         bool_data, name, message = get_data()
@@ -83,25 +81,15 @@ def main(cursor, conn):
 
         conn.commit()
 
-
-    def connection_close(cursor, conn, window):
-        # Close the cursor and the connection when the window is closed
-        cursor.close()
-        conn.close()
-        window.destroy()
-
-
     # Function to display the date in a specific format and update it every hour
     def display_date(var, root, format_date, time_int):
         var.set(time.strftime(format_date, time.localtime()))
         root.after(time_int, display_date, var, root, format_date, time_int)
 
-
     # Function to display the clock time in a specific format and update it every minute
     def display_clock(var, root, format_time, time_int):
         var.set((time.strftime(format_time, time.localtime())))
         root.after(time_int, display_clock, var, root, format_time, time_int)
-
 
     window = Tk()
 
@@ -149,7 +137,7 @@ def main(cursor, conn):
         image=button_image_1,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: connection_close(cursor, conn, window),
+        command=lambda: window.destroy(),
         relief="flat"
     )
     button_exit.place(x=679.0, y=475.0, width=60.0, height=33.0)
