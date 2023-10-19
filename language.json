@@ -1,0 +1,28 @@
+{
+    "en": {
+        "header": "write your message",
+        "welcome": "Welcome to Ns",
+        "name": "name",
+        "message": "message",
+        "anonymous": "anonymous",
+        "button_1": "button_1.png",
+        "button_2": "button_2.png",
+        "button_4": "button_4.png",
+        "name_error": "One of the above must be checked /filled in!",
+        "message_error": "Message cannot be empty!",
+        "message_len": "message has to be less than 140 characters!"
+    },
+    "nl": {
+        "header": "Schrijf je bericht",
+        "welcome": "Welkom bij NS",
+        "name": "naam",
+        "message": "   bericht",
+        "anonymous": "anoniem",
+        "button_1": "button_1_1.png",
+        "button_2": "button_2_1.png",
+        "button_4": "button_4_1.png",
+        "name_error": "Een van de bovenstaande moet worden aangevinkt / ingevuld zijn!",
+        "message_error": "Bericht mag niet leeg zijn!",
+        "message_len": "Het bericht moet minder dan 140 tekens bevatten!"
+    }
+}
