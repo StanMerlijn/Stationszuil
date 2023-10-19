@@ -15,7 +15,7 @@ import time
 
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH_LP = OUTPUT_PATH / Path(r"/Users/stanmerlijn/PycharmProjects/pythonProject4/build/assets/frame0")
+ASSETS_PATH_LP = OUTPUT_PATH / Path(r"/Users/stanmerlijn/PycharmProjects/pythonProject4/proj/assets/frame0")
 ASSETS_PATH_PC = OUTPUT_PATH / Path(r"C:\Users\smerl\PycharmProjects\StationsZuil\proj\assets\frame0  ")
 
 
