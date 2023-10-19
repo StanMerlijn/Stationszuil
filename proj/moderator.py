@@ -118,7 +118,7 @@ def main():
 
 # Main block
 if __name__ == "__main__":
-    file_messages = "old_proj/text.csv"
+    file_messages = "../old_proj/text.csv"
     #mod_info = input("Moderator name: "), input("Moderator email: ")
     # send_data(file_messages, mod_info)
     with connect_to_db() as conn, conn.cursor() as cur:

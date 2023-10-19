@@ -24,22 +24,22 @@ if __name__ == '__main__':
     window = Tk()
 
     window.geometry("960x540")
-    window.configure(bg = "#E6E6E9")
+    window.configure(bg="#E6E6E9")
 
     conn = connect_to_db()
     cursor = conn.cursor()
 
     canvas = Canvas(
         window,
-        bg = "#E6E6E9",
-        height = 540,
-        width = 960,
-        bd = 0,
-        highlightthickness = 0,
-        relief = "ridge"
+        bg="#E6E6E9",
+        height=540,
+        width=960,
+        bd=0,
+        highlightthickness=0,
+        relief="ridge"
     )
 
-    canvas.place(x = 0, y = 0)
+    canvas.place(x=0, y=0)
     canvas.create_rectangle(
         0.0,
         41.0,
@@ -83,7 +83,7 @@ if __name__ == '__main__':
         font=("Open Sans", 11 * -1)
     )
 
-    ass_shit= canvas.create_text(
+    ass_shit = canvas.create_text(
         202.0,
         331.0,
         anchor="nw",
@@ -139,7 +139,7 @@ if __name__ == '__main__':
         image=button_image_1,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda : connection_close(cursor, conn, window),
+        command=lambda: connection_close(cursor, conn, window),
         relief="flat"
     )
     button_exit.place(
