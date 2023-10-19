@@ -1,5 +1,6 @@
-from input_text import *
+from proj.input_text import *
 import pprint
+
 
 # Function to check if file is not empty
 def file_not_empty():
@@ -17,10 +18,11 @@ def write_to_clean_file(filename, data_to_file):
 
 # Function to prepare user data for insertion into the database
 def prepare_user_data(message_data):
-    insert_script = ("INSERT INTO message_mod (name_user, date_message, time_message, "
-                     "message, station_city, mod_email, mod_name, "
-                     "mod_date, mod_time, approval, message_id) "
-                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+    insert_script = ("INSERT INTO message_mod ("
+                     "mod_email, mod_name, "
+                     "mod_date, mod_time, "
+                     "approval, message_id) "
+                     "VALUES (%s, %s, %s, %s, %s, %s)")
 
     # The data to write to the DB
     insert_values = (*message_data.values(),)
@@ -100,14 +102,29 @@ def send_data(filename, mod_data):
 
 
 def get_new_messages(cursor):
-    query_not_exists = """SELECT * FROM message_send WHERE NOT EXISTS (
-            SELECT 1 
-            FROM message_mod
-            WHERE message_mod.name_user = message_send.name_user)"""
+    query_not_exists = """SELECT 
+    t1.name_user, t1.message_column , t1.message_id
+    FROM message_send as t1
+    WHERE NOT EXISTS (
+    SELECT 1
+    FROM message_mod 
+    WHERE message_mod.message_id = t1.message_id)"""
 
     cursor.execute(query_not_exists)
     messages = cursor.fetchall()
-    pprint.pprint(messages)
+    return messages
+
+
+def get_latest_messages(cursor):
+    query_get_messages = """SELECT t1.name_user, t1.message_column, t1.date_message, t1.time_message, t2.* 
+        FROM message_send as t1 
+        LEFT JOIN message_mod as t2
+        ON t1.message_id = t2.message_id
+        WHERE t2.message_id IS NOT NULL
+        ORDER BY t2.mod_date DESC, t2.mod_time DESC
+        LIMIT 5;"""
+    cursor.execute(query_get_messages)
+    messages = cursor.fetchall()
     return messages
 
 
@@ -119,7 +136,8 @@ def main():
 # Main block
 if __name__ == "__main__":
     file_messages = "../old_proj/text.csv"
-    #mod_info = input("Moderator name: "), input("Moderator email: ")
+    # mod_info = input("Moderator name: "), input("Moderator email: ")
     # send_data(file_messages, mod_info)
     with connect_to_db() as conn, conn.cursor() as cur:
-        get_new_messages(cur)
+        #get_new_messages(cur)
+        get_latest_messages(cur)
