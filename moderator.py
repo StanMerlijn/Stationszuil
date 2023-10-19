@@ -1,5 +1,5 @@
 from input_text import *
-
+import pprint
 
 # Function to check if file is not empty
 def file_not_empty():
@@ -17,10 +17,10 @@ def write_to_clean_file(filename, data_to_file):
 
 # Function to prepare user data for insertion into the database
 def prepare_user_data(message_data):
-    insert_script = ("INSERT INTO message (name_user, date_message, time_message, "
+    insert_script = ("INSERT INTO message_mod (name_user, date_message, time_message, "
                      "message, station_city, mod_email, mod_name, "
-                     "mod_date, mod_time, bool_approved) "
-                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+                     "mod_date, mod_time, approval, message_id) "
+                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
     # The data to write to the DB
     insert_values = (*message_data.values(),)
@@ -49,7 +49,7 @@ def initialize_data(cursor, line, mod_data):
             'mod_name': mod_name,
             'current_date': current_date,
             'current_time': current_time,
-            'bool_approved': bool_approved
+            'message_id': bool_approved
         }
 
         # insert user data into the ns_user table
@@ -99,8 +99,27 @@ def send_data(filename, mod_data):
         print("There are no more messages to moderate")
 
 
+def get_new_messages(cursor):
+    query_not_exists = """SELECT * FROM message_send WHERE NOT EXISTS (
+            SELECT 1 
+            FROM message_mod
+            WHERE message_mod.name_user = message_send.name_user)"""
+
+    cursor.execute(query_not_exists)
+    messages = cursor.fetchall()
+    pprint.pprint(messages)
+    return messages
+
+
+def main():
+    # Function to read through message not yes moderated
+    print("help")
+
+
 # Main block
 if __name__ == "__main__":
-    file_messages = "text.csv"
-    mod_info = input("Moderator name: "), input("Moderator email: ")
-    send_data(file_messages, mod_info)
+    file_messages = "old_proj/text.csv"
+    #mod_info = input("Moderator name: "), input("Moderator email: ")
+    # send_data(file_messages, mod_info)
+    with connect_to_db() as conn, conn.cursor() as cur:
+        get_new_messages(cur)
