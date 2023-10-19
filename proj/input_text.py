@@ -1,8 +1,7 @@
 import random
-import time
-
 import psycopg2
 from datetime import datetime
+import time
 
 
 # Function to connect to the database
@@ -10,14 +9,15 @@ def connect_to_db():
     # Prompting for the database password
     while True:
         try:
-            db_password = input("DB password: ")
+            #db_password = input("DB password: ")
 
             # Establishing a connection to the PostgreSQL database
             connection = psycopg2.connect(
                 host="localhost",
                 database="NS messages",
                 user="postgres",
-                password=db_password
+                password="Whynow3421!"
+                #db_password
             )
             return connection
         except psycopg2.OperationalError as error:
@@ -64,6 +64,18 @@ def get_time_date():
     return time, date
 
 
+# Function to display the date in a specific format and update it every hour
+def display_date(var, root, format_date, time_int):
+    var.set(time.strftime(format_date, time.localtime()))
+    root.after(time_int, display_date, var, root, format_date, time_int)
+
+
+# Function to display the clock time in a specific format and update it every minute
+def display_clock(var, root, format_time, time_int):
+    var.set((time.strftime(format_time, time.localtime())))
+    root.after(time_int, display_clock, var, root, format_time, time_int)
+
+
 def get_random_station(cursor):
     cursor.execute("SElECT (station_city) FROM station_service")
     row_data = cursor.fetchall()
@@ -75,7 +87,7 @@ def get_random_station(cursor):
 # Function to prepare the message data for insertion into the database
 def prepare_message_data():
     insert_script = ("INSERT INTO message_send (name_user, date_message, time_message, "
-                     "message_column, station_name, message_id)"
+                     "message_column, station_city, message_id)"
                      "VALUES (%s, %s, %s, %s, %s, %s)")
     return insert_script
 
