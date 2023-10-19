@@ -19,15 +19,12 @@ def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH_PC / Path(path)
 
 
-if __name__ == '__main__':
+def main(cursor, conn):
 
     window = Tk()
 
     window.geometry("960x540")
     window.configure(bg="#E6E6E9")
-
-    conn = connect_to_db()
-    cursor = conn.cursor()
 
     canvas = Canvas(
         window,
@@ -265,3 +262,8 @@ if __name__ == '__main__':
     )
     window.resizable(False, False)
     window.mainloop()
+
+
+if __name__ == '__main__':
+    with connect_to_db() as conn, conn.cursor() as cursor:
+        main(cursor, conn)

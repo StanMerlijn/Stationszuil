@@ -15,102 +15,98 @@ import time
 
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH_LP = OUTPUT_PATH / Path(r"/Users/stanmerlijn/PycharmProjects/pythonProject4/assets/frame0")
+ASSETS_PATH_LP = OUTPUT_PATH / Path(r"/Users/stanmerlijn/PycharmProjects/pythonProject4/build/assets/frame0")
 ASSETS_PATH_PC = OUTPUT_PATH / Path(r"C:\Users\smerl\PycharmProjects\StationsZuil\proj\assets\frame0  ")
 
 
 def relative_to_assets(path: str) -> Path:
-    return ASSETS_PATH_PC / Path(path)
+    return ASSETS_PATH_LP / Path(path)
 
 
-# this function returns the correct name of the user
-def get_name():
-    if name_var.get() == 1:
-        entry_name.configure(foreground="grey")
-        entry_name["state"] = "disabled"
-        return "anonymous"
-    elif name_var.get() == 0:
-        entry_name["state"] = "normal"
-        entry_name.configure(foreground="#000716")
-        return user_name.get()
+def main(cursor, conn):
+    # this function returns the correct name of the user
+    def get_name():
+        if name_var.get() == 1:
+            entry_name.configure(foreground="grey")
+            entry_name["state"] = "disabled"
+            return "anonymous"
+        elif name_var.get() == 0:
+            entry_name["state"] = "normal"
+            entry_name.configure(foreground="#000716")
+            return user_name.get()
 
 
-# this function gets the name and message. will display message if one is empty
-def get_data():
-    entered_text = entry_message.get("1.0", tk.END)
-    name = get_name()
-    message_len = len(entered_text.replace("\n", ""))
+    # this function gets the name and message. will display message if one is empty
+    def get_data():
+        entered_text = entry_message.get("1.0", tk.END)
+        name = get_name()
+        message_len = len(entered_text.replace("\n", ""))
 
-    canvas.itemconfig(message_error, text="")
-    canvas.itemconfig(name_error, text="")
+        canvas.itemconfig(message_error, text="")
+        canvas.itemconfig(name_error, text="")
 
-    empty_return = False, None, None
+        empty_return = False, None, None
 
-    # displays message if no name is given.
-    if name == "":
-        canvas.itemconfig(name_error, text="One of the above must be checked /filled in!")
+        # displays message if no name is given.
+        if name == "":
+            canvas.itemconfig(name_error, text="One of the above must be checked /filled in!")
 
-    # displays message if entry message is empty.
-    if entered_text == "\n":
-        canvas.itemconfig(message_error, text="Message cannot be empty!")
+        # displays message if entry message is empty.
+        if entered_text == "\n":
+            canvas.itemconfig(message_error, text="Message cannot be empty!")
 
-    if message_len > 140:
-        canvas.itemconfig(message_error, text="message has to be less than 140 characters!")
-        return empty_return
+        if message_len > 140:
+            canvas.itemconfig(message_error, text="message has to be less than 140 characters!")
+            return empty_return
 
-    # if the data fields are not empty it will return them.
-    if entered_text == "\n" or name == "":
-        return empty_return
+        # if the data fields are not empty it will return them.
+        if entered_text == "\n" or name == "":
+            return empty_return
 
-    return True, name, entered_text
-
-
-# this function sends the data to the database
-def send_data():
-    bool_data, name, message = get_data()
-    if bool_data:
-        # prepare and commit all data to database
-        main_gui(cursor, name, message)
-
-        # reset inputs to prepare for new message
-        entry_name.configure(state="normal")
-        entry_name.configure(foreground="black")
-        entry_name.delete(0, tk.END)
-
-        entry_message.delete("1.0", tk.END)
-        name_var.set(value=0)
-
-    conn.commit()
+        return True, name, entered_text
 
 
-def connection_close(cursor, conn, window):
-    # Close the cursor and the connection when the window is closed
-    cursor.close()
-    conn.close()
-    window.destroy()
+    # this function sends the data to the database
+    def send_data():
+        bool_data, name, message = get_data()
+        if bool_data:
+            # prepare and commit all data to database
+            main_gui(cursor, name, message)
+
+            # reset inputs to prepare for new message
+            entry_name.configure(state="normal")
+            entry_name.configure(foreground="black")
+            entry_name.delete(0, tk.END)
+
+            entry_message.delete("1.0", tk.END)
+            name_var.set(value=0)
+
+        conn.commit()
 
 
-# Function to display the date in a specific format and update it every hour
-def display_date(var, root, format_date, time_int):
-    var.set(time.strftime(format_date, time.localtime()))
-    root.after(time_int, display_date, var, root, format_date, time_int)
+    def connection_close(cursor, conn, window):
+        # Close the cursor and the connection when the window is closed
+        cursor.close()
+        conn.close()
+        window.destroy()
 
 
-# Function to display the clock time in a specific format and update it every minute
-def display_clock(var, root, format_time, time_int):
-    var.set((time.strftime(format_time, time.localtime())))
-    root.after(time_int, display_clock, var, root, format_time, time_int)
+    # Function to display the date in a specific format and update it every hour
+    def display_date(var, root, format_date, time_int):
+        var.set(time.strftime(format_date, time.localtime()))
+        root.after(time_int, display_date, var, root, format_date, time_int)
 
 
-if __name__ == '__main__':
+    # Function to display the clock time in a specific format and update it every minute
+    def display_clock(var, root, format_time, time_int):
+        var.set((time.strftime(format_time, time.localtime())))
+        root.after(time_int, display_clock, var, root, format_time, time_int)
+
 
     window = Tk()
 
     window.geometry("960x540")
     window.title("NS message")
-
-    conn = connect_to_db()
-    cursor = conn.cursor()
 
     canvas = Canvas(
         window,
@@ -298,3 +294,8 @@ if __name__ == '__main__':
     display_clock(time_var, window, "%H:%M", 1000)
     window.resizable(False, False)
     window.mainloop()
+
+
+if __name__ == '__main__':
+    with connect_to_db() as conn, conn.cursor() as cursor:
+        main(cursor, conn)
