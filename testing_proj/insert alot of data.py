@@ -32,21 +32,22 @@ def write_shit_mod(cur):
     mod_email = "anal shit"
     mod_name = "stan"
     messages_ids = get_new_messages(cur)
-    ids = [i for id in messages_ids for i in id]
-
-    # message_id = 618176016
+    print(messages_ids)
+    ids = []
+    for t in messages_ids:
+        ids.append(t[2])
     while index < len(ids):
-        for i in range(1, 4):
+        for i in range(1, 2):
             time_now, date_now = get_time_date()
             message_id = ids[index]
             index += 1
 
             message_data = {
-                'approval': "aproved",
                 'mod_email': mod_email,
+                'mod_name': mod_name,
                 'current_date': date_now,
                 'current_time': time_now,
-                'mod_name': mod_name,
+                'approval': "aproved",
                 'message_id': message_id
             }
             print(*message_data.values())
