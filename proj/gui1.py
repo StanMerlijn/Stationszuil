@@ -10,8 +10,7 @@ from pathlib import Path
 from tkinter import Tk, Canvas, Text, Button, PhotoImage
 import tkinter as tk
 import ttkbootstrap as ttk
-from input_text import *
-import time
+from input_text import display_date, display_clock, main_gui, connect_to_db
 
 
 OUTPUT_PATH = Path(__file__).parent
@@ -80,16 +79,6 @@ def main(cursor, conn):
             name_var.set(value=0)
 
         conn.commit()
-
-    # Function to display the date in a specific format and update it every hour
-    def display_date(var, root, format_date, time_int):
-        var.set(time.strftime(format_date, time.localtime()))
-        root.after(time_int, display_date, var, root, format_date, time_int)
-
-    # Function to display the clock time in a specific format and update it every minute
-    def display_clock(var, root, format_time, time_int):
-        var.set((time.strftime(format_time, time.localtime())))
-        root.after(time_int, display_clock, var, root, format_time, time_int)
 
     window = Tk()
 
