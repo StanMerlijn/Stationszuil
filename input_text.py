@@ -14,8 +14,8 @@ def connect_to_db():
 
             # Establishing a connection to the PostgreSQL database
             connection = psycopg2.connect(
-                host="20.68.149.147",
-                database="NS_messages",
+                host="localhost",
+                database="NS messages",
                 user="postgres",
                 password=db_password
             )
@@ -37,26 +37,22 @@ def is_input_yes(input_text):
     return input_text.lower() in yes_bool
 
 
+# Bool function to check if the id is already in the database
+def is_user_id_unique(user_id, cursor):
+    cursor.execute("SELECT COUNT(*) FROM message_send WHERE message_id=%s", (user_id,))
+    count = cursor.fetchone()[0]
+    return count == 0
+
+
 # Function to generate a unique ID
 def generate_user_id():
-    return random.randint(1, 11)
+    return random.randint(1, 999999999)
 
 
-def get_message_ids(cursor):
-    cursor.execute("SELECT message_id FROM message_send")
-    data_ids = cursor.fetchall()
-    message_ids = []
-
-    for i in data_ids:
-        for ids in i:
-            message_ids.append(ids)
-    return message_ids
-
-
-def create_new_id(ids):
+def create_new_id(cursor):
     while True:
         new_id = generate_user_id()
-        if new_id not in ids:
+        if is_user_id_unique(new_id, cursor):
             return new_id
 
 
@@ -96,8 +92,7 @@ def main_gui(cursor, name, message):
     random_station = get_random_station(cursor)
 
     # creating new unique message id
-    message_ids = get_message_ids(cursor)
-    message_id = create_new_id(message_ids)
+    message_id = create_new_id(cursor)
 
     message_data = name, date_now, time_now, message, random_station, message_id
     write_data_to_db(cursor, message_data)
@@ -105,4 +100,4 @@ def main_gui(cursor, name, message):
 
 if __name__ == "__main__":
     with connect_to_db() as conn, conn.cursor() as cur:
-        print(get_message_ids(cur))
+        print("hello world")
