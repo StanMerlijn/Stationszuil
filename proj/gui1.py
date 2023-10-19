@@ -16,7 +16,7 @@ import time
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH_LP = OUTPUT_PATH / Path(r"/Users/stanmerlijn/PycharmProjects/pythonProject4/assets/frame0")
-ASSETS_PATH_PC = OUTPUT_PATH / Path(r"C:\Users\smerl\PycharmProjects\StationsZuil\assets\frame0 ")
+ASSETS_PATH_PC = OUTPUT_PATH / Path(r"C:\Users\smerl\PycharmProjects\StationsZuil\proj\assets\frame0  ")
 
 
 def relative_to_assets(path: str) -> Path:

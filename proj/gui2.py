@@ -12,7 +12,7 @@ from gui1 import *
 
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH_PC = OUTPUT_PATH / Path(r"C:\Users\smerl\PycharmProjects\StationsZuil\assets\frame1")
+ASSETS_PATH_PC = OUTPUT_PATH / Path(r"C:\Users\smerl\PycharmProjects\StationsZuil\proj\assets\frame1 ")
 
 
 def relative_to_assets(path: str) -> Path:
