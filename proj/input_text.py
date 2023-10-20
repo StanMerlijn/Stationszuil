@@ -9,15 +9,14 @@ def connect_to_db():
     # Prompting for the database password
     while True:
         try:
-            #db_password = input("DB password: ")
+            db_password = input("DB password: ")
 
             # Establishing a connection to the PostgreSQL database
             connection = psycopg2.connect(
                 host="localhost",
                 database="NS messages",
                 user="postgres",
-                password="Whynow3421!"
-                #db_password
+                password=db_password
             )
             return connection
         except psycopg2.OperationalError as error:
@@ -72,7 +71,11 @@ def display_date(var, root, format_date, time_int):
 
 # Function to display the clock time in a specific format and update it every minute
 def display_clock(var, root, format_time, time_int):
-    var.set((time.strftime(format_time, time.localtime())))
+    try:
+        current_time = time.strftime(format_time, time.localtime(time.mktime(time.localtime())))
+        var.set(current_time)
+    except TypeError:
+        pass
     root.after(time_int, display_clock, var, root, format_time, time_int)
 
 
