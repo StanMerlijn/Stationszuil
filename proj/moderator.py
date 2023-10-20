@@ -29,6 +29,24 @@ def prepare_user_data(message_data):
     return insert_script, insert_values
 
 
+# function to initialize data from gui
+def initialize_data_gui(cursor, mod_data, message_id):
+    current_time, current_date = get_time_date()
+    approval, mod_name, mod_email = mod_data
+
+    message_data = {
+        'mod_email': mod_email,
+        'mod_name': mod_name,
+        'current_date': current_date,
+        'current_time': current_time,
+        'approval': approval,
+        'message_id': message_id
+        }
+
+    insert_script, insert_value = prepare_user_data(message_data)
+    cursor.execute(insert_script, insert_value)
+
+
 # Function to initialize data and handle moderation
 def initialize_data(cursor, line, mod_data):
     current_time, current_date = get_time_date()
@@ -102,35 +120,46 @@ def send_data(filename, mod_data):
 
 
 def get_new_messages(cursor):
-    query_not_exists = """SELECT 
-    t1.name_user, t1.message_column , t1.message_id
-    FROM message_send as t1
-    WHERE NOT EXISTS (
-    SELECT 1
-    FROM message_mod 
-    WHERE message_mod.message_id = t1.message_id)"""
+    # Query to get data from message_send
+    # if it's not already moderated(message_id is not in message_mod)
+    query_not_exists = (
+        "SELECT t1.name_user, t1.message_column , t1.message_id "
+        "FROM message_send as t1 "
+        "WHERE NOT EXISTS ( "
+        "SELECT 1 "
+        "FROM message_mod "
+        "WHERE message_mod.message_id = t1.message_id)")
 
     cursor.execute(query_not_exists)
     messages = cursor.fetchall()
     return messages
 
 
-def get_latest_messages(cursor):
-    query_get_messages = """SELECT t1.name_user, t1.message_column, t1.date_message, t1.time_message, t2.* 
-        FROM message_send as t1 
-        LEFT JOIN message_mod as t2
-        ON t1.message_id = t2.message_id
-        WHERE t2.message_id IS NOT NULL
-        ORDER BY t2.mod_date DESC, t2.mod_time DESC
-        LIMIT 5;"""
-    cursor.execute(query_get_messages)
+def get_newest_approved(cursor, approval_values, limit_value):
+    # Query to get all data for a message
+    # sorted by newest which are all approved
+    query_get_messages = (
+        "SELECT t1.name_user, t1.message_column, t1.date_message, t1.time_message, t2.* "
+        "FROM message_send as t1 "
+        "LEFT JOIN message_mod as t2 "
+        "ON t1.message_id = t2.message_id "
+        "WHERE t2.message_id IS NOT NULL and t2.approval IN %s "
+        "ORDER BY t2.mod_date DESC, t2.mod_time DESC "
+        "LIMIT %s;")
+    cursor.execute(query_get_messages, (tuple(approval_values), limit_value,))
     messages = cursor.fetchall()
     return messages
 
 
-def main():
-    # Function to read through message not yes moderated
-    print("help")
+def display_messages(var, root, limit_messages, time_int, cursor):
+    approval_val = ["approved", "not approved"]
+
+    messages = get_newest_approved(cursor, approval_val, limit_messages)
+    for message in messages:
+        to_display = (f"time is {message[3]}\nMessage: {message[1]}")
+
+        var.set(to_display)
+    root.after(time_int, display_clock, var, root, limit_messages, time_int)
 
 
 # Main block
@@ -140,4 +169,10 @@ if __name__ == "__main__":
     # send_data(file_messages, mod_info)
     with connect_to_db() as conn, conn.cursor() as cur:
         #get_new_messages(cur)
-        get_latest_messages(cur)
+        val = ["approved", "not approved"]
+        for message in get_newest_approved(cur, val, 5):
+            list(message)
+            print(message)
+            # print(message[2])
+            # print(message[3])
+
