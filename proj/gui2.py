@@ -92,7 +92,9 @@ def send_data_mod(approval, cursor, conn):
 
 
 window2 = Tk()
+window2.title("NS moderator")
 window2.geometry("960x540")
+
 
 canvas = Canvas(
     window2,
@@ -206,15 +208,22 @@ label_messages = ttk.Label(
     wraplength=250,
     font=("Open Sans SemiBold", 10 * -1)
 )
-label_messages.place(x=552.0, y=140.0)
+label_messages.place(x=550.0, y=140.0)
+
+messages_text = ttk.ScrolledText(
+    window2,
+    width=30,
+    height=20,
+)
+# messages_text.place(x=545.0, y=140.0)
 
 canvas.create_text(
     542.0,
     106.0,
     anchor="nw",
-    text="latest messages moderated",
+    text="Moderated messages",
     fill="#003082",
-    font=("Open Sans Bold", 11 * -1)
+    font=("Open Sans Bold", 14 * -1)
 )
 
 name_var = StringVar()
