@@ -7,10 +7,8 @@ import tkinter as tk
 from pathlib import Path
 # from tkinter import *
 # Explicit imports to satisfy Flake8
-from tkinter import Tk, Canvas, Text, Button, PhotoImage
-
+from tkinter import Tk, Canvas, Text, Button, PhotoImage, StringVar, IntVar, END
 import ttkbootstrap as ttk
-
 from input_text import display_date, display_clock, main_gui, connect_to_db
 
 OUTPUT_PATH = Path(__file__).parent
@@ -36,7 +34,7 @@ def get_name():
 
 # this function gets the name and message. will display message if one is empty
 def get_data():
-    entered_text = entry_message.get("1.0", tk.END)
+    entered_text = entry_message.get("1.0", END)
     name = get_name()
     message_len = len(entered_text.replace("\n", ""))
 
@@ -74,9 +72,9 @@ def send_data(cur, con):
         # reset inputs to prepare for new message
         entry_name.configure(state="normal")
         entry_name.configure(foreground="black")
-        entry_name.delete(0, tk.END)
+        entry_name.delete(0, END)
 
-        entry_message.delete("1.0", tk.END)
+        entry_message.delete("1.0", END)
         name_var.set(value=0)
 
     con.commit()
@@ -157,7 +155,7 @@ image_1 = canvas.create_image(
     image=image_image_1
 )
 
-date_var = tk.StringVar()
+date_var = StringVar()
 label_date = ttk.Label(
     canvas,
     textvariable=date_var,
@@ -166,7 +164,7 @@ label_date = ttk.Label(
 )
 label_date.place(x=227.0, y=151)
 
-time_var = tk.StringVar()
+time_var = StringVar()
 label_time = ttk.Label(
     canvas,
     textvariable=time_var,
@@ -176,7 +174,7 @@ label_time = ttk.Label(
 label_time.place(x=365.0, y=151)
 
 
-name_var = tk.IntVar(value=0)
+name_var = IntVar(value=0)
 button_name = ttk.Checkbutton(canvas, command=get_name, variable=name_var, offvalue=0, onvalue=1)
 button_name.place(x=199.0, y=214.0, width=17.0, height=16.32000732421875)
 
@@ -245,7 +243,7 @@ entry_bg_name = canvas.create_image(
 style = ttk.Style()
 style.configure("Disabled.TEntry", foreground="#000716", background="#F0F0F2")
 
-user_name = tk.StringVar()
+user_name = StringVar()
 entry_name = ttk.Entry(canvas, textvariable=user_name, style="Disabled.TEntry")
 entry_name.place(x=199.60000002384186, y=252.0, width=198.6000030040741, height=25.0)
 
