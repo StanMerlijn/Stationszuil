@@ -1,6 +1,5 @@
 from proj.input_text import *
-import pprint
-
+import datetime
 
 # Function to check if file is not empty
 def file_not_empty():
@@ -139,7 +138,7 @@ def get_newest_approved(cursor, approval_values, limit_value):
     # Query to get all data for a message
     # sorted by newest which are all approved
     query_get_messages = (
-        "SELECT t1.name_user, t1.message_column, t1.date_message, t1.time_message, t2.* "
+        "SELECT t1.name_user, t1.message_column, t1.date_message, t1.time_message, t2.mod_time, t2.message_id "
         "FROM message_send as t1 "
         "LEFT JOIN message_mod as t2 "
         "ON t1.message_id = t2.message_id "
@@ -155,11 +154,16 @@ def display_messages(var, root, limit_messages, time_int, cursor):
     approval_val = ["approved", "not approved"]
 
     messages = get_newest_approved(cursor, approval_val, limit_messages)
-    for message in messages:
-        to_display = (f"time is {message[3]}\nMessage: {message[1]}")
 
-        var.set(to_display)
-    root.after(time_int, display_clock, var, root, limit_messages, time_int)
+    new_text = ""
+    for message in messages:
+        formatted_time_mod = (message[4]).strftime("%H:%M")
+        new_text += (f"\nMessage by {message[0]:>5} - time: {formatted_time_mod:<5}"
+                     f"\nMessage: {message[1]}\n")
+
+    var.set(new_text)
+
+    root.after(time_int, display_messages, var, root, limit_messages, time_int, cursor)
 
 
 # Main block
