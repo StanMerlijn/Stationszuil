@@ -3,15 +3,15 @@
 # https://github.com/ParthJadhav/Tkinter-Designer
 
 
+import tkinter as tk
 from pathlib import Path
-
 # from tkinter import *
 # Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Text, Button, PhotoImage
-import tkinter as tk
-import ttkbootstrap as ttk
-from input_text import display_date, display_clock, main_gui, connect_to_db
 
+import ttkbootstrap as ttk
+
+from input_text import display_date, display_clock, main_gui, connect_to_db
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH_LP = OUTPUT_PATH / Path(r"/Users/stanmerlijn/PycharmProjects/pythonProject4/proj/assets/frame0")
@@ -19,7 +19,7 @@ ASSETS_PATH_PC = OUTPUT_PATH / Path(r"C:\Users\smerl\PycharmProjects\StationsZui
 
 
 def relative_to_assets(path: str) -> Path:
-    return ASSETS_PATH_LP / Path(path)
+    return ASSETS_PATH_PC / Path(path)
 
 
 # this function returns the correct name of the user
@@ -113,7 +113,7 @@ canvas.create_text(
     anchor="nw",
     text="message\n",
     fill="#003082",
-    font=("Open Sans", 11 * -1)
+    font=("Open Sans SemiBold", 11 * -1)
 )
 
 canvas.create_text(
@@ -122,7 +122,7 @@ canvas.create_text(
     anchor="nw",
     text="name\n",
     fill="#003082",
-    font=("Open Sans", 11 * -1)
+    font=("Open Sans SemiBold", 11 * -1)
 )
 
 button_image_1 = PhotoImage(
@@ -162,7 +162,7 @@ label_date = ttk.Label(
     canvas,
     textvariable=date_var,
     foreground="#003082",
-    font=("OpenSansRoman SemiBold", 11 * -1)
+    font=("Open Sans SemiBold", 11 * -1)
 )
 label_date.place(x=227.0, y=151)
 
@@ -171,7 +171,7 @@ label_time = ttk.Label(
     canvas,
     textvariable=time_var,
     foreground="#003082",
-    font=("OpenSansRoman SemiBold", 11 * -1)
+    font=("Open Sans SemiBold", 11 * -1)
 )
 label_time.place(x=365.0, y=151)
 
@@ -182,11 +182,11 @@ button_name.place(x=199.0, y=214.0, width=17.0, height=16.32000732421875)
 
 canvas.create_text(
     233.0,
-    215.0,
+    213.0,
     anchor="nw",
     text="anonymous",
     fill="#000000",
-    font=("OpenSansRoman Regular", 11 * -1)
+    font=("Open Sans Regular", 11 * -1)
 )
 
 canvas.create_text(
@@ -195,7 +195,7 @@ canvas.create_text(
     anchor="nw",
     text="write your message",
     fill="#003082",
-    font=("OpenSansRoman SemiBold", 20 * -1)
+    font=("Open Sans SemiBold", 20 * -1)
 )
 
 image_image_2 = PhotoImage(
@@ -220,7 +220,7 @@ canvas.create_text(
     anchor="nw",
     text="welcome to NS",
     fill="#003082",
-    font=("OpenSansRoman ExtraBold", 13 * -1)
+    font=("Open Sans SemiBold", 13 * -1)
 )
 
 entry_image_1 = PhotoImage(
@@ -255,7 +255,7 @@ name_error = canvas.create_text(
     anchor="nw",
     text="",
     fill="#DB0029",
-    font=("OpenSansRoman Light", 9 * -1)
+    font=("Open Sans regular", 9 * -1)
 )
 
 message_error = canvas.create_text(
@@ -264,7 +264,7 @@ message_error = canvas.create_text(
     anchor="nw",
     text="",
     fill="#DB0029",
-    font=("OpenSansRoman Light", 9 * -1),
+    font=("Open Sans regular", 9 * -1),
     state="disabled"
 )
 
