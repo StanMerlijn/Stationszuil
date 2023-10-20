@@ -50,7 +50,7 @@ def button_reject_action():
 
 def next_message(messages):
     global lines_index
-    lines_index += 1 # Move to the next message.
+    lines_index += 1  # Move to the next message.
 
     if lines_index < len(messages):
         name_var.set(messages[lines_index][0])
@@ -188,24 +188,25 @@ error_email = canvas.create_text(
 message_var = StringVar()
 message = ttk.Label(
     anchor="nw",
-    text="547AWMdnhiu3hWwYVHDS6lUZgu\nbrhoE0sjIwamw1NVZcNwyZqNfwvkwwZ6\n"
-         "R1y33zGBBI0VLaUt\nNpICZRKsim2u6EuS4tGXuygjbKHTmhIsgYo\n"
-         "GkAhzx62pGXaOJ23KNeZFN66o8UlkOE\n",
+    text="",
     foreground="#000000",
     textvariable=message_var,
+    wraplength=250,
     font=("Open Sans Regular", 11 * -1)
 )
+message.place(x=202.0, y=331.0)
 
 messages_var = StringVar()
-message.place(x=202.0, y=331.0)
 label_messages = ttk.Label(
     anchor="nw",
-    textvariable=message_var,
+    textvariable=messages_var,
+    text="",
     foreground="#000000",
     background="#F0F0F2",
-    font=("Open Sans Regular", 11 * -1)
+    wraplength=250,
+    font=("Open Sans SemiBold", 10 * -1)
 )
-label_messages.place(x=566.0, y=140.0)
+label_messages.place(x=552.0, y=140.0)
 
 canvas.create_text(
     542.0,
@@ -299,23 +300,21 @@ image_1 = canvas.create_image(
     image=image_image_1
 )
 
-date_var = StringVar()
-date_display = ttk.Label(
+label_date = ttk.Label(
     anchor="nw",
-    textvariable=date_var,
+    text="",
     foreground="#003082",
     font=("Open Sans Bold", 12 * -1)
 )
-date_display.place(x=420.0, y=12.0,)
+label_date.place(x=420.0, y=12.0,)
 
-time_var = StringVar()
-time_display = ttk.Label(
+label_time = ttk.Label(
     anchor="nw",
-    textvariable=time_var,
+    text="",
     foreground="#003082",
     font=("Open Sans Bold", 12 * -1)
 )
-time_display.place(x=512.0, y=12.0,)
+label_time.place(x=512.0, y=12.0,)
 
 canvas.create_text(
     202.0,
@@ -370,10 +369,11 @@ entry_email.place(
     width=198.6000030040741,
     height=23.0
 )
+window2.bind('<KeyPress-Escape>', lambda event: window2.destroy())
 
-display_clock(time_var, window2, "%H:%M:%S", 1000)
-display_date(date_var, window2, "%B %d", 1000)
-display_messages(messages_var, window2, 5, 1000, cursor)
+display_clock(label_time, window2, "%H:%M:%S", 1000)
+display_date(label_date, window2, "%B %d", 1000)
+display_messages(messages_var, window2, 3, 1000, cursor)
 
 next_message(messages)
 window2.resizable(False, False)

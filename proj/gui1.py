@@ -155,19 +155,17 @@ image_1 = canvas.create_image(
     image=image_image_1
 )
 
-date_var = StringVar()
 label_date = ttk.Label(
     canvas,
-    textvariable=date_var,
+    text="",
     foreground="#003082",
     font=("Open Sans SemiBold", 11 * -1)
 )
 label_date.place(x=227.0, y=151)
 
-time_var = StringVar()
 label_time = ttk.Label(
     canvas,
-    textvariable=time_var,
+    text="",
     foreground="#003082",
     font=("Open Sans SemiBold", 11 * -1)
 )
@@ -265,9 +263,10 @@ message_error = canvas.create_text(
     font=("Open Sans regular", 9 * -1),
     state="disabled"
 )
+window.bind('<KeyPress-Escape>', lambda event: window.destroy())
 
-display_date(date_var, window, "%B %d", 1000*60*60)
-display_clock(time_var, window, "%H:%M", 1000)
+display_date(label_date, window, "%B:%d", 1000*60*60)
+display_clock(label_time, window, "%H:%M:%S", 1000)
 window.resizable(False, False)
 window.mainloop()
 

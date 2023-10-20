@@ -9,14 +9,15 @@ def connect_to_db():
     # Prompting for the database password
     while True:
         try:
-            db_password = input("DB password: ")
+            # db_password = input("DB password: ")
 
             # Establishing a connection to the PostgreSQL database
             connection = psycopg2.connect(
                 host="localhost",
                 database="NS messages",
                 user="postgres",
-                password=db_password
+                password="Whynow3421!"
+                # db_password
             )
             return connection
         except psycopg2.OperationalError as error:
@@ -64,19 +65,18 @@ def get_time_date():
 
 
 # Function to display the date in a specific format and update it every hour
-def display_date(var, root, format_date, time_int):
-    var.set(time.strftime(format_date, time.localtime()))
-    root.after(time_int, display_date, var, root, format_date, time_int)
+def display_date(label, root, format_date, time_int):
+    label.configure(text=f"{time.strftime(format_date, time.localtime())}")
+    root.after(time_int, display_date, label, root, format_date, time_int)
 
 
 # Function to display the clock time in a specific format and update it every minute
-def display_clock(var, root, format_time, time_int):
+def display_clock(label, root, format_time, time_int):
     try:
-        current_time = time.strftime(format_time, time.localtime(time.mktime(time.localtime())))
-        var.set(current_time)
+        label.configure(text=f"{time.strftime(format_time, time.localtime())}")
     except TypeError:
         pass
-    root.after(time_int, display_clock, var, root, format_time, time_int)
+    root.after(time_int, display_clock, label, root, format_time, time_int)
 
 
 def get_random_station(cursor):
@@ -88,7 +88,7 @@ def get_random_station(cursor):
 
 
 # Function to prepare the message data for insertion into the database
-def prepare_message_data():
+def get_insert_script():
     insert_script = ("INSERT INTO message_send (name_user, date_message, time_message, "
                      "message_column, station_city, message_id)"
                      "VALUES (%s, %s, %s, %s, %s, %s)")
@@ -97,8 +97,7 @@ def prepare_message_data():
 
 # Function to write message data to the database
 def write_data_to_db(cursor, message_data):
-    insert_script = prepare_message_data()
-    cursor.execute(insert_script, message_data)
+    cursor.execute(get_insert_script(), message_data)
 
 
 def main_gui(cursor, name, message):
