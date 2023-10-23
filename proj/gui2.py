@@ -94,6 +94,8 @@ def send_data_mod(approval, cursor, conn):
 window2 = Tk()
 window2.title("NS moderator")
 window2.geometry("960x540")
+style = ttk.Style(theme="nscolors2")
+
 
 
 canvas = Canvas(
@@ -104,14 +106,6 @@ canvas = Canvas(
     bd=0,
     highlightthickness=0,
     relief="ridge"
-)
-
-canvas.create_rectangle(
-    -1,
-    0.0,
-    960,
-    600,
-    fill="#E6E6E9"
 )
 
 canvas.place(x=0, y=0)
@@ -191,7 +185,7 @@ message_var = StringVar()
 message = ttk.Label(
     anchor="nw",
     text="",
-    foreground="#000000",
+    background="#ffffff",
     textvariable=message_var,
     wraplength=250,
     font=("Open Sans Regular", 11 * -1)
@@ -203,7 +197,6 @@ label_messages = ttk.Label(
     anchor="nw",
     textvariable=messages_var,
     text="",
-    foreground="#000000",
     background="#F0F0F2",
     wraplength=250,
     font=("Open Sans SemiBold", 10 * -1)
@@ -230,7 +223,7 @@ name_var = StringVar()
 name_user = ttk.Label(
     anchor="nw",
     text="not defined ",
-    foreground="#000000",
+    background="#ffffff",
     textvariable=name_var,
     font=("Open Sans Regular", 11 * -1)
 )
@@ -313,6 +306,7 @@ label_date = ttk.Label(
     anchor="nw",
     text="",
     foreground="#003082",
+    background="#ffffff",
     font=("Open Sans Bold", 12 * -1)
 )
 label_date.place(x=420.0, y=12.0,)
@@ -321,6 +315,7 @@ label_time = ttk.Label(
     anchor="nw",
     text="",
     foreground="#003082",
+    background="#ffffff",
     font=("Open Sans Bold", 12 * -1)
 )
 label_time.place(x=512.0, y=12.0,)

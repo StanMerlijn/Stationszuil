@@ -1,3 +1,5 @@
+import random
+
 from proj.moderator import *
 import time
 
@@ -11,13 +13,14 @@ def generate_random_name():
 def write_shit(cur):
     start = time.time()
     station = "Oss"
-    name = "anonymous"
+    names = "anonymous"
     time_now, date_now = get_time_date()
-    for i in range(1, 101):
+
+    for i in range(1, 1001):
         message = i
 
         message_id = create_new_id(cur)
-
+        name = random.choices(names)
         message_data = name, date_now, time_now, message, station, message_id
         write_data_to_db(cur, message_data)
 
@@ -61,6 +64,6 @@ def write_shit_mod(cur):
 
 if __name__ == '__main__':
     with (connect_to_db() as conn, conn.cursor() as cursor):
-        # write_shit(cursor)
-        write_shit_mod(cursor)
+        write_shit(cursor)
+        # write_shit_mod(cursor)
         conn.commit()

@@ -87,6 +87,8 @@ cursor = conn.cursor()
 
 window.geometry("960x540")
 window.title("NS message")
+style = ttk.Style(theme="nscolors2")
+style.configure("TCheckbutton", background="#ffffff")
 
 canvas = Canvas(
     window,
@@ -97,8 +99,6 @@ canvas = Canvas(
     highlightthickness=0,
     relief="ridge"
 )
-
-canvas.create_rectangle(-1, 0.0, 960, 600, fill="#E6E6E9")
 canvas.place(x=0, y=0)
 
 canvas.create_rectangle(1158.0, 61.0, 1179.0, 70.0, fill="#000000", outline="")
@@ -159,6 +159,7 @@ label_date = ttk.Label(
     canvas,
     text="",
     foreground="#003082",
+    background="#ffffff",
     font=("Open Sans SemiBold", 11 * -1)
 )
 label_date.place(x=227.0, y=151)
@@ -167,14 +168,26 @@ label_time = ttk.Label(
     canvas,
     text="",
     foreground="#003082",
+    background="#ffffff",
     font=("Open Sans SemiBold", 11 * -1)
 )
 label_time.place(x=365.0, y=151)
 
 
 name_var = IntVar(value=0)
-button_name = ttk.Checkbutton(canvas, command=get_name, variable=name_var, offvalue=0, onvalue=1)
-button_name.place(x=199.0, y=214.0, width=17.0, height=16.32000732421875)
+button_name = ttk.Checkbutton(
+    canvas,
+    command=get_name,
+    variable=name_var,
+    offvalue=0,
+    onvalue=1,
+)
+button_name.place(
+    x=199.0,
+    y=214.0,
+    width=17.0,
+    height=16.32000732421875
+)
 
 canvas.create_text(
     233.0,
@@ -238,11 +251,8 @@ entry_bg_name = canvas.create_image(
     image=entry_image_name
 )
 
-style = ttk.Style()
-style.configure("Disabled.TEntry", foreground="#000716", background="#F0F0F2")
-
 user_name = StringVar()
-entry_name = ttk.Entry(canvas, textvariable=user_name, style="Disabled.TEntry")
+entry_name = ttk.Entry(canvas, textvariable=user_name)
 entry_name.place(x=199.60000002384186, y=252.0, width=198.6000030040741, height=25.0)
 
 name_error = canvas.create_text(
