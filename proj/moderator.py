@@ -166,6 +166,35 @@ def display_messages(var, root, limit_messages, time_int, cursor):
     root.after(time_int, display_messages, var, root, limit_messages, time_int, cursor)
 
 
+def display_latest_messages(root, limit_messages, time_int, cursor):
+    approval_val = ["approved", "not approved"]
+
+    messages = get_newest_approved(cursor, approval_val, limit_messages)
+
+    y_pos = 155
+    for message in messages:
+        formatted_time_mod = (message[4]).strftime("%H:%M")
+
+        # display name and time
+        title_text = root.create_text(
+            660.0,
+            y_pos,
+            text=f"Message by {message[0]:>5} - time: {formatted_time_mod:<5}",
+            font=("Open Sans Semibold", 11 * -1))
+
+
+        # display message
+        message_text = root.create_text(
+            660.0,
+            (y_pos + 25),
+            text=f"Message:",
+            font=("Open Sans ", 9 * -1))
+
+        y_pos += 60
+
+    root.after(time_int, display_messages, root, limit_messages, time_int, cursor)
+
+
 # Main block
 if __name__ == "__main__":
     file_messages = "../old_proj/text.csv"

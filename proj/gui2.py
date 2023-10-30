@@ -8,7 +8,7 @@ from pathlib import Path
 # Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Entry, Button, PhotoImage, StringVar, IntVar
 from input_text import *
-from moderator import get_new_messages, initialize_data_gui, display_messages
+from moderator import get_new_messages, initialize_data_gui, display_latest_messages
 import ttkbootstrap as ttk
 
 
@@ -45,7 +45,7 @@ def button_reject_action():
     bool_is_data = get_data()[0]
     if not bool_is_data:  # If no valid data, exit the function
         return
-    next_message(messages) # Move to the next message
+    next_message(messages)  # Move to the next message
 
 
 def next_message(messages):
@@ -125,7 +125,7 @@ canvas.create_rectangle(
     fill="#FFFFFF",
     outline=""
 )
-canvas.create_rectangle(
+message_block = canvas.create_rectangle(
     541.0,
     135.0,
     819.0,
@@ -190,10 +190,8 @@ message = ttk.Label(
 )
 message.place(x=202.0, y=331.0)
 
-messages_var = StringVar()
 label_messages = ttk.Label(
     anchor="nw",
-    textvariable=messages_var,
     text="",
     background="#F0F0F2",
     wraplength=250,
@@ -368,7 +366,7 @@ window2.bind('<KeyPress-Escape>', lambda event: window2.destroy())
 
 display_clock(label_time, window2, "%H:%M:%S", 1000)
 display_date(label_date, window2, "%B %d", 1000)
-display_messages(messages_var, window2, 3, 1000, cursor)
+display_latest_messages(canvas, 3, 1000, cursor)
 
 next_message(messages)
 window2.resizable(False, False)
