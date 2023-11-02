@@ -11,7 +11,7 @@ CREATE TABLE station_service (
 
 INSERT INTO station_service (
      -- station_id, station_code, station_name,
-    station_city, country, ov_bike, elevator, toilet, park_and_ride)
+    station_city, country, ov_bike, elevator, toilet, park_and_ride, lat, lon)
 VALUES
     ('Arnhem', 'NL', true, false, true, false, 51.985104, 5.898730),
     ('Almere', 'NL', false, true, false, true, 52.350784, 5.264702),
