@@ -1,5 +1,8 @@
 from proj.input_text import *
-import datetime
+import ttkbootstrap as ttk
+import pprint as p
+import requests
+
 
 # Function to check if file is not empty
 def file_not_empty():
@@ -118,6 +121,14 @@ def send_data(filename, mod_data):
         print("There are no more messages to moderate")
 
 
+# function to call all data from the station_service table
+def get_stations_data(cursor):
+    query_station = "SELECT * FROM station_service"
+    cursor.execute(query_station)
+    stations = cursor.fetchall()
+    return stations
+
+
 def get_new_messages(cursor):
     # Query to get data from message_send
     # if it's not already moderated(message_id is not in message_mod)
@@ -134,7 +145,7 @@ def get_new_messages(cursor):
     return messages
 
 
-def get_newest_approved(cursor, approval_values, limit_value):
+def get_newest_messages_moderated(cursor, approval_values, limit_value):
     # Query to get all data for a message
     # sorted by newest which are all approved
     query_get_messages = (
@@ -150,10 +161,28 @@ def get_newest_approved(cursor, approval_values, limit_value):
     return messages
 
 
+def get_newest_messages_station(cursor, limit_value):
+    # Query to get all data for a message
+    # sorted by newest which are all approved
+    query_get_messages = (
+        "SELECT t1.name_user, t1.message_column, t1.date_message, t1.time_message, t1.station_city, "
+        "t2.mod_time, t2.message_id "
+        "FROM message_send as t1 "
+        "LEFT JOIN message_mod as t2 "
+        "ON t1.message_id = t2.message_id "
+        "WHERE t1.station_city = 'Alkmaar' AND "
+        "t2.message_id IS NOT NULL and t2.approval = 'approved'"
+        "ORDER BY t2.mod_date DESC, t2.mod_time DESC "
+        "LIMIT %s;")
+    cursor.execute(query_get_messages, (limit_value,))
+    messages = cursor.fetchall()
+    return messages
+
+
 def display_messages(var, root, limit_messages, time_int, cursor):
     approval_val = ["approved", "not approved"]
 
-    messages = get_newest_approved(cursor, approval_val, limit_messages)
+    messages = get_newest_messages_moderated(cursor, approval_val, limit_messages)
 
     new_text = ""
     for message in messages:
@@ -166,17 +195,95 @@ def display_messages(var, root, limit_messages, time_int, cursor):
     root.after(time_int, display_messages, var, root, limit_messages, time_int, cursor)
 
 
+def truncate_text(text):
+
+    max_length = 40  # Set the maximum length you want
+
+    if len(text) > max_length:
+        truncated_text = text[:max_length] + "..."
+    else:
+        truncated_text = text + "..."
+
+    return truncated_text
+
+
+def create_update_messages(x_pos, y_pos, messages, root):
+
+    root.delete("text_to_delete")
+
+    for index, message in enumerate(messages, start=0):
+        print(message)
+        formatted_time_mod = (message[4]).strftime("%H:%M")
+
+        # display name and time
+        root.create_text(
+            x_pos + 35,
+            y_pos,
+            text=f"{message[0]:<15} - {formatted_time_mod:>15}",
+            font=("Open Sans bold", 11 * -1),
+            tags="text_to_delete"
+        )
+
+        root.create_rectangle(
+            x_pos - 20,
+            y_pos + 36,
+            x_pos + 150,
+            y_pos + 39,
+            fill="#FFC917",
+            outline="",
+            tags="text_to_delete"
+        )
+        hello = "sssdfasdsasssdfasdsasssdfasdsasssdfasdsasssdfasdsasssdfasdsasssdfasdsa"
+        # display the message
+        root.create_text(
+            x_pos + 15,
+            (y_pos + 25),
+            text=f"{truncate_text(hello)}",
+            font=("Open Sans ", 9 * -1),
+            tags="text_to_delete"
+        )
+
+        y_pos += 60
+
+
+def display_latest_messages(root, limit_messages, cursor, x_pos, y_pos):
+    approval_val = ["approved", "not approved"]
+    messages = get_newest_messages_moderated(cursor, approval_val, limit_messages)
+
+    create_update_messages(x_pos, y_pos, messages, root)
+
+    root.after(6000, display_latest_messages, root, limit_messages, cursor, x_pos, y_pos)
+
+
+def display_latest_messages_station(root, limit_messages, cursor, x_pos, y_pos):
+    messages = get_newest_messages_station(cursor, limit_messages)
+
+    create_update_messages(x_pos, y_pos, messages, root)
+
+    root.after(6000, display_latest_messages_station, root, limit_messages, cursor, x_pos, y_pos)
+
+
+def get_weather_geolocation(lat, long):
+    api_key = '164897825d4c9c6d19f032047061bfbf'
+
+    url = (f"https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={long}"
+           f"&exclude=hourly&appid={api_key}&units=metric")
+
+    response = requests.get(url)
+    data = response.json()
+    return data
+
+
 # Main block
 if __name__ == "__main__":
     file_messages = "../old_proj/text.csv"
-    # mod_info = input("Moderator name: "), input("Moderator email: ")
-    # send_data(file_messages, mod_info)
-    with connect_to_db() as conn, conn.cursor() as cur:
-        #get_new_messages(cur)
-        val = ["approved", "not approved"]
-        for message in get_newest_approved(cur, val, 5):
-            list(message)
-            print(message)
-            # print(message[2])
-            # print(message[3])
 
+    with connect_to_db() as conn, conn.cursor() as cur:
+        # p.pprint(get_stations_data(cur))
+        approval_val = ["approved", "not approved"]
+        messages1 = get_newest_messages_moderated(cur, approval_val, 5)
+        print(messages1)
+        messages = get_newest_messages_station(cur, 5)
+        print(messages)
+        data = get_newest_messages_station(cur, 5)
+        print(data)
