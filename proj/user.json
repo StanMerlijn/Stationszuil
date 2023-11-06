@@ -1,0 +1,27 @@
+{
+    "themes": [
+        {
+            "nscolors2": {
+                "type": "light",
+                "colors": {
+                    "primary": "#0063d3",
+                    "secondary": "#ffc917",
+                    "success": "#009a42",
+                    "info": "#005ca0",
+                    "warning": "#ff7700",
+                    "danger": "#db0029",
+                    "light": "#F8F9FA",
+                    "dark": "#343a40",
+                    "bg": "#e6e6e9",
+                    "fg": "#070721",
+                    "selectbg": "#005ca0",
+                    "selectfg": "#070721",
+                    "border": "#bfbfbf",
+                    "inputfg": "#070721",
+                    "inputbg": "#ffffff",
+                    "active": "#070721"
+                }
+            }
+        }
+        ]
+}
