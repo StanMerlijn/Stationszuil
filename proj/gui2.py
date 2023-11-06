@@ -18,7 +18,7 @@ ASSETS_PATH_PC = OUTPUT_PATH / Path(r"C:\Users\smerl\PycharmProjects\StationsZui
 
 
 def relative_to_assets(path: str) -> Path:
-    return ASSETS_PATH_PC / Path(path)
+    return ASSETS_PATH_LP / Path(path)
 
 
 conn = connect_to_db()
@@ -26,7 +26,6 @@ cursor = conn.cursor()
 
 lines_index = -1
 messages = get_new_messages(cursor)
-p.pprint(messages)
 
 
 def button_approve_action():
@@ -53,14 +52,18 @@ def next_message(messages):
     global lines_index
     lines_index += 1  # Move to the next message.
 
-    if lines_index < len(messages):
+    if len(messages) == 0:
+        message_var.set("there are no messages to moderate")
+
+    elif lines_index < len(messages):
         name_var.set(messages[lines_index][0])
         message_var.set(messages[lines_index][1])
 
 
+
 def get_data():
-    mod_email = entry_name.get()
-    mod_name = entry_email.get()
+    mod_email = entry_email.get()
+    mod_name = entry_name.get()
 
     canvas.itemconfig(error_name, text="")
     canvas.itemconfig(error_email, text="")
@@ -69,14 +72,18 @@ def get_data():
 
     # displays message if no name is given.
     if mod_name == "":
-        canvas.itemconfig(error_email, text="Email cannot be empty!")
+        canvas.itemconfig(error_name, text="Name cannot be empty!")
 
     # displays message if entry message is empty.
     if mod_email == "":
-        canvas.itemconfig(error_name, text="Name cannot be empty!")
+        canvas.itemconfig(error_email, text="email cannot be empty!")
+
+    # displays message if there is no @ in email
+    if "@" not in mod_email:
+        canvas.itemconfig(error_email, text="Email must contain @!")
 
     # if the data fields are not empty it will return them.
-    if mod_email == "\n" or mod_name == "":
+    if mod_email == "\n" or mod_name == "" or "@" not in mod_email:
         return empty_return
 
     return True, mod_name, mod_email  # Return valid data if both fields are not empty.
@@ -95,9 +102,9 @@ def send_data_mod(approval, cursor, conn):
 window2 = Tk()
 window2.title("NS moderator")
 window2.geometry("960x540")
+style = ttk.Style()
+style.load_user_themes("user.json")
 style = ttk.Style(theme="nscolors2")
-
-
 
 canvas = Canvas(
     window2,

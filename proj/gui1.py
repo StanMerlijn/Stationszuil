@@ -12,12 +12,12 @@ import ttkbootstrap as ttk
 from input_text import display_date, display_clock, main_gui, connect_to_db
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH_LP = OUTPUT_PATH / Path(r"/Users/stanmerlijn/PycharmProjects/pythonProject4/proj/assets/frame2")
+ASSETS_PATH_LP = OUTPUT_PATH / Path(r"/Users/stanmerlijn/PycharmProjects/pythonProject4/proj/assets/frame0")
 ASSETS_PATH_PC = OUTPUT_PATH / Path(r"C:\Users\smerl\PycharmProjects\StationsZuil\proj\assets\frame0  ")
 
 
 def relative_to_assets(path: str) -> Path:
-    return ASSETS_PATH_PC / Path(path)
+    return ASSETS_PATH_LP / Path(path)
 
 
 # this function returns the correct name of the user
@@ -87,8 +87,9 @@ cursor = conn.cursor()
 
 window.geometry("960x540")
 window.title("NS message")
+style = ttk.Style()
+style.load_user_themes("user.json")
 style = ttk.Style(theme="nscolors2")
-style.configure("TCheckbutton", background="#ffffff")
 
 canvas = Canvas(
     window,

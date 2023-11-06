@@ -111,7 +111,3 @@ def main_gui(cursor, name, message):
     message_data = name, date_now, time_now, message, random_station, message_id
     write_data_to_db(cursor, message_data)
 
-
-if __name__ == "__main__":
-    with connect_to_db() as conn, conn.cursor() as cur:
-        print("hello world")
