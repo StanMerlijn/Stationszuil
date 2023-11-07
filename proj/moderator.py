@@ -1,23 +1,6 @@
 import tkinter
-
 from proj.input_text import *
-import ttkbootstrap as ttk
-import pprint as p
 import requests
-
-
-# Function to check if file is not empty
-def file_not_empty():
-    with open(file_messages) as csv_file:
-        lines = csv_file.readlines()
-        return len(lines) != 0
-
-
-# Function to write data to a clean file
-def write_to_clean_file(filename, data_to_file):
-    with open(filename, "w") as csv_file:
-        for item in data_to_file:
-            csv_file.write(f"{item}\n")
 
 
 # Function to prepare user data for insertion into the database
@@ -51,78 +34,6 @@ def initialize_data_gui(cursor, mod_data, message_id):
     cursor.execute(insert_script, insert_value)
 
 
-# Function to initialize data and handle moderation
-def initialize_data(cursor, line, mod_data):
-    current_time, current_date = get_time_date()
-    name_user, message, date_message, time_message, station = line.strip().split(", ")
-    mod_name, mod_email = mod_data
-
-    user_input = input(f"Is this text by {name_user} valid: {message}: ")
-
-    # if moderator agrees that the text is valid, it will be written into the database
-    if is_input_yes(user_input):
-        bool_approved = 1
-
-        message_data = {
-            'name_user': name_user,
-            'date_message': date_message,
-            'time_message': time_message,
-            'message': message,
-            'station': station,
-            'mod_email': mod_email,
-            'mod_name': mod_name,
-            'current_date': current_date,
-            'current_time': current_time,
-            'message_id': bool_approved
-        }
-
-        # insert user data into the ns_user table
-        insert_script, insert_value = prepare_user_data(message_data)
-        cursor.execute(insert_script, insert_value)
-        return True, user_input
-
-    return False, user_input
-
-
-# Function to write data to the database or a clean file
-def write_data(connection, cursor, filename, mod_data):
-    # puts all lines from the csv file into a list
-    with open(filename) as csv_file:
-        all_messages = [line.strip() for line in csv_file.readlines()]
-
-    len_messages = len(all_messages)
-    lines_index = 0
-
-    # when a list is moderated, lines_index will increase by 1
-    while lines_index < len_messages:
-        line = all_messages[lines_index]
-        bool_approved, user_input = initialize_data(cursor, line, mod_data)
-
-        # commits to DB if message = valid
-        if bool_approved:
-            connection.commit()
-        # clears file if all messages are moderated
-        elif (lines_index + 1) == len_messages:
-            print("There are no more messages to moderate")
-            clear_file(filename)
-        # if user inputs exit when asked if text is valid, it will return every message back to file
-        elif user_input.lower() == "exit":
-            data_back_to_file = all_messages[lines_index:]
-            write_to_clean_file(filename, data_back_to_file)
-            break
-
-        lines_index += 1
-
-
-# Function to send data for moderation
-def send_data(filename, mod_data):
-    if file_not_empty():
-        with connect_to_db() as connection, connection.cursor() as cursor:
-            write_data(connection, cursor, filename, mod_data)
-    else:
-        print("There are no more messages to moderate")
-
-
 # function to call all data from the station_service table
 def get_stations_data(cursor):
     query_station = "SELECT * FROM station_service"
@@ -149,7 +60,6 @@ def get_new_messages(cursor):
 
 def get_newest_messages_moderated(cursor, approval_values, limit_value):
     # Query to get all data for a message
-    # sorted by newest which are all approved
     query_get_messages = (
         "SELECT t1.name_user, t1.message_column, t1.date_message, t1.time_message, t2.mod_time, t2.message_id "
         "FROM message_send as t1 "
@@ -163,9 +73,9 @@ def get_newest_messages_moderated(cursor, approval_values, limit_value):
     return messages
 
 
+# function to get the newest messages from a specific station in chronological order.
 def get_newest_messages_station(cursor, limit_value, city_name):
-    # Query to get all data for a message
-    # sorted by newest which are all approved
+    # Query to get all data for a message. sorted by newest which are all approved
     query_get_messages = (
         "SELECT t1.name_user, t1.message_column, t1.date_message, t1.time_message, "
         "t2.mod_time, t2.message_id "
@@ -193,6 +103,7 @@ def truncate_text(text):
     return truncated_text
 
 
+# function to create and delete old messages
 def create_update_messages(x_pos, y_pos, messages, root):
 
     root.delete("text_to_delete")
@@ -215,22 +126,19 @@ def create_update_messages(x_pos, y_pos, messages, root):
         )
 
         # display the message
-        mesages = ("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                   "aaaaaaaaaaaaaaaaaaaaaaaa"
-                   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         root.create_text(
             x_pos,
             y_pos + 28,
-            # text=f"{truncate_text(mesages)}",
-            text=f"{mesages}",
+            text=f"{stripped_messages}",
             font=("Open Sans ", 9 * -1),
             tags="text_to_delete",
             fill="#000000",
             width=270,
-            anchor = tkinter.W
+            anchor=tkinter.W
         )
 
-        if (index < 4):
+        # displaying lines under messages
+        if index < 4:
             offset = -30
             height = 3
             root.create_rectangle(
@@ -246,6 +154,7 @@ def create_update_messages(x_pos, y_pos, messages, root):
         y_pos += 62
 
 
+# function to display all moderated messages in chronological order
 def display_latest_messages(root, limit_messages, cursor, x_pos, y_pos):
     approval_val = ["approved", "not approved"]
     messages = get_newest_messages_moderated(cursor, approval_val, limit_messages)
@@ -254,55 +163,51 @@ def display_latest_messages(root, limit_messages, cursor, x_pos, y_pos):
 
     root.after(6000, display_latest_messages, root, limit_messages, cursor, x_pos, y_pos)
 
+
 city_name = "Apeldoorn"
 def set_city(city):
     global city_name
     city_name = city
 
-def display_latest_messages_station(root, limit_messages, cursor, x_pos, y_pos):
+
+# function to display latest approved messages in chronological order from a specific station
+def display_latest_messages_station(root, cursor, x_pos, y_pos):
     global city_name
+    limit_messages = 5
     messages = get_newest_messages_station(cursor, limit_messages, city_name)
 
     create_update_messages(x_pos, y_pos, messages, root)
 
-    root.after(6000, display_latest_messages_station, root, limit_messages, cursor, x_pos, y_pos) #, city_name)
+    root.after(1000, display_latest_messages_station, root, cursor, x_pos, y_pos)
 
 
+# function to get weather forecast from geodata
 def get_weather_geolocation(lat, long):
     api_key = '164897825d4c9c6d19f032047061bfbf'
 
     url = (f"https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={long}"
            f"&exclude=hourly&appid={api_key}&units=metric")
 
-    # url = (f"https://api.openweathermap.org/data/2.5/forecast/daily?lat={lat}&lon={long}"
-    #        f"&appid={api_key}&units=metric")
-
     response = requests.get(url)
     data = response.json()
     return data
 
 
+# function to get all the useful forecast weather data
 def get_current_weather(lat, lon):
     weather_data = get_weather_geolocation(lat, lon)
 
-    temp = weather_data["list"][0]["main"]["temp"]
+    weather_dates = []
+    icons = []
+    temp_forecast = []
+
+    # loop to get the latest five weather data reports
+    for i in range(0, 6):
+        temp_forecast.append(weather_data["list"][i]["main"]["temp"])
+        icons.append(weather_data["list"][i]["weather"][0]["icon"])
+        weather_dates.append(weather_data["list"][i]["dt_txt"])
+
     weather = weather_data["list"][0]["weather"][0]["description"]
-    icon = weather_data["list"][0]["weather"][0]["icon"]
     wind = weather_data["list"][0]["wind"]["speed"]
 
-    return temp, weather, wind, icon
-
-
-# Main block
-if __name__ == "__main__":
-    file_messages = "../old_proj/text.csv"
-
-    with connect_to_db() as conn, conn.cursor() as cur:
-        weather_data = get_weather_geolocation(51.985104, 5.898730)
-        # p.pprint(weather_data)
-        days_all = []
-        for day in weather_data["list"]:
-            days = day["dt_txt"].split(" ")
-            print(days)
-            days_all.append(days[0])
-
+    return temp_forecast, weather, wind, icons, weather_dates

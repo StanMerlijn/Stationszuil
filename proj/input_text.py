@@ -9,15 +9,14 @@ def connect_to_db():
     # Prompting for the database password
     while True:
         try:
-            # db_password = input("DB password: ")
+            db_password = input("DB password: ")
 
             # Establishing a connection to the PostgreSQL database
             connection = psycopg2.connect(
-                host="localhost",
-                database="NS messages",
+                host="20.68.149.147",
+                database="NS_messages",
                 user="postgres",
-                password="Whynow3421!"
-                # db_password
+                password=db_password
             )
             return connection
         except psycopg2.OperationalError as error:
@@ -110,4 +109,5 @@ def main_gui(cursor, name, message):
 
     message_data = name, date_now, time_now, message, random_station, message_id
     write_data_to_db(cursor, message_data)
+
 

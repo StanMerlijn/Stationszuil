@@ -2,14 +2,10 @@
 # https://github.com/ParthJadhav/tk-Designer
 import tkinter
 from pathlib import Path
-
-# from tk import *
-# Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Entry, Button, PhotoImage, StringVar, IntVar
 from input_text import *
 from moderator import get_new_messages, initialize_data_gui, display_latest_messages
 import ttkbootstrap as ttk
-import pprint as p
 
 
 OUTPUT_PATH = Path(__file__).parent
@@ -52,13 +48,9 @@ def next_message(messages):
     global lines_index
     lines_index += 1  # Move to the next message.
 
-    if len(messages) == 0:
-        message_var.set("there are no messages to moderate")
-
-    elif lines_index < len(messages):
+    if lines_index < len(messages):
         name_var.set(messages[lines_index][0])
         message_var.set(messages[lines_index][1])
-
 
 
 def get_data():
@@ -92,10 +84,15 @@ def get_data():
 def send_data_mod(approval, cursor, conn):
     bool_is_data, mod_name, mod_email = get_data()
     mod_data = approval, mod_name, mod_email
-    if bool_is_data:
-        message_id = messages[lines_index][2]
-        initialize_data_gui(cursor, mod_data, message_id)
-
+    try:
+        if bool_is_data:
+            message_id = messages[lines_index][2]
+            initialize_data_gui(cursor, mod_data, message_id)
+    except IndexError as e:
+        message_var.set("there are no messages to moderate")
+        name_var.set("")
+        print(f"error: {e}")
+        return
     conn.commit()
 
 
@@ -199,22 +196,6 @@ message = ttk.Label(
     font=("Open Sans Regular", 11 * -1)
 )
 message.place(x=202.0, y=331.0)
-
-label_messages = ttk.Label(
-    anchor="nw",
-    text="",
-    background="#F0F0F2",
-    wraplength=250,
-    font=("Open Sans SemiBold", 10 * -1)
-)
-label_messages.place(x=550.0, y=140.0)
-
-messages_text = ttk.ScrolledText(
-    window2,
-    width=30,
-    height=20,
-)
-# messages_text.place(x=545.0, y=140.0)
 
 canvas.create_text(
     500.0,

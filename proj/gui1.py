@@ -3,10 +3,7 @@
 # https://github.com/ParthJadhav/Tkinter-Designer
 
 
-import tkinter as tk
 from pathlib import Path
-# from tkinter import *
-# Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Text, Button, PhotoImage, StringVar, IntVar, END
 import ttkbootstrap as ttk
 from input_text import display_date, display_clock, main_gui, connect_to_db
@@ -276,7 +273,7 @@ message_error = canvas.create_text(
 )
 window.bind('<KeyPress-Escape>', lambda event: window.destroy())
 
-display_date(label_date, window, "%B:%d", 1000*60*60)
+display_date(label_date, window, "%B %d", 1000*60*60)
 display_clock(label_time, window, "%H:%M:%S", 1000)
 window.resizable(False, False)
 window.mainloop()
