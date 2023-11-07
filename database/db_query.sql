@@ -19,7 +19,11 @@ CREATE TABLE IF NOT EXISTS public.message_send
     message_column character varying(255) COLLATE pg_catalog."default" NOT NULL,
     station_city character varying(255) COLLATE pg_catalog."default",
     message_id integer NOT NULL,
-    CONSTRAINT message_send_pkey PRIMARY KEY (message_id)
+    CONSTRAINT message_send_pkey PRIMARY KEY (message_id),
+    CONSTRAINT station_city_fkey FOREIGN KEY (station_city)
+        REFERENCES public.station_service (station_city) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
 );
 
 CREATE TABLE IF NOT EXISTS public.message_mod
