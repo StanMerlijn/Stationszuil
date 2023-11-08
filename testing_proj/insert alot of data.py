@@ -10,17 +10,18 @@ def generate_random_name():
     return name
 
 
-def write_shit(cur):
+def write_message_send(cur, stations):
     start = time.time()
-    station = "Oss"
-    names = "anonymous"
+    name = "anonymous"
     time_now, date_now = get_time_date()
 
-    for i in range(1, 1001):
+    for i in range(1, 500):
         message = i
 
         message_id = create_new_id(cur)
-        name = random.choices(names)
+        station = random.choice(stations)
+        station = station[0]
+
         message_data = name, date_now, time_now, message, station, message_id
         write_data_to_db(cur, message_data)
 
@@ -28,7 +29,7 @@ def write_shit(cur):
     print(f"time elapsed = {end - start}")
 
 
-def write_shit_mod(cur):
+def write_data_mod(cur):
     start = time.time()
 
     index = 0
@@ -63,7 +64,20 @@ def write_shit_mod(cur):
 
 
 if __name__ == '__main__':
+    query = "SELECT station_city FROM station_service"
+
     with (connect_to_db() as conn, conn.cursor() as cursor):
-        write_shit(cursor)
-        # write_shit_mod(cursor)
+        cursor.execute(query)
+        stations = cursor.fetchall()
+        print(stations)
+        # write_message_send(cursor, stations)
+        messages = get_new_messages(cursor)
+        print(messages)
+        mod_data = "approved", "stan", "merlkas@dsadsa.com"
+        station = random.choice(stations)
+        print(station[0])
+        for item in messages:
+            message_id = item[2]
+            initialize_data_gui(cursor, mod_data, message_id)
+
         conn.commit()
